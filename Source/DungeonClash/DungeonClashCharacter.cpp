@@ -41,6 +41,10 @@ ADungeonClashCharacter::ADungeonClashCharacter()
 	CameraBoom->TargetArmLength = 400.0f;
 	CameraBoom->bUsePawnControlRotation = true;
 
+	// Create the sword mesh
+	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>("Sword");
+	SwordMesh->SetupAttachment(GetMesh(), "Sword_Socket");
+
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);

@@ -31,6 +31,12 @@ class ADungeonClashCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
+public:
+
+	// Sword mesh
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* SwordMesh;
+
 protected:
 
 	/** Jump Input Action */
