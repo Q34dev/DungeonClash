@@ -69,6 +69,9 @@ void ADungeonClashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADungeonClashCharacter::Look);
+	
+		// Attacking
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ADungeonClashCharacter::DoAttack);
 	}
 	else
 	{
@@ -92,6 +95,14 @@ void ADungeonClashCharacter::Look(const FInputActionValue& Value)
 
 	// route the input
 	DoLook(LookAxisVector.X, LookAxisVector.Y);
+}
+
+void ADungeonClashCharacter::DoAttack()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "ATTACK");
+	}
 }
 
 void ADungeonClashCharacter::DoMove(float Right, float Forward)
