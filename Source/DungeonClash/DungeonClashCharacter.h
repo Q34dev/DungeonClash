@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "PlayerMeleeCombatComponent.h"
 #include "DungeonClashCharacter.generated.h"
 
 class USpringArmComponent;
@@ -36,6 +37,10 @@ public:
 	// Sword mesh
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* SwordMesh;
+
+	// Player Melee Combat component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPlayerMeleeCombatComponent* CombatComp;
 
 protected:
 
