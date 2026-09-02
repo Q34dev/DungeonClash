@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -28,4 +26,9 @@ public:
 	UAnimMontage* am_Attack;
 
 	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+	void OnSlashBegin();
+	UFUNCTION(BlueprintCallable)
+	void OnSlashEnd();
 };

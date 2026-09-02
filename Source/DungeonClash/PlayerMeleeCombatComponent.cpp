@@ -29,3 +29,13 @@ void UPlayerMeleeCombatComponent::Attack()
 	// play the attack animation
 	parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
 }
+
+void UPlayerMeleeCombatComponent::OnSlashBegin()
+{
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "SLASH BEGIN");
+}
+
+void UPlayerMeleeCombatComponent::OnSlashEnd()
+{
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "SLASH END");
+}
