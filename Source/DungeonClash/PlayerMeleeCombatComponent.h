@@ -26,9 +26,8 @@ public:
 	UAnimMontage* am_Attack;
 
 	void Attack();
-
-	UFUNCTION(BlueprintCallable)
-	void OnSlashBegin();
-	UFUNCTION(BlueprintCallable)
-	void OnSlashEnd();
+	
+	void OnSlashBegin(); // Anim Notify State Start
+	void OnSlashEnd();  // Anim Notify State End
+	void OnAttackEnd(); // Anim Notify
 };

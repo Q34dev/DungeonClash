@@ -39,3 +39,8 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 {
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "SLASH END");
 }
+
+void UPlayerMeleeCombatComponent::OnAttackEnd()
+{
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "ATTACK END");
+}
