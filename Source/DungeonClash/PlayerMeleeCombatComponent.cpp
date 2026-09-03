@@ -1,5 +1,6 @@
 #include "PlayerMeleeCombatComponent.h"
 #include "DungeonClashCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
 UPlayerMeleeCombatComponent::UPlayerMeleeCombatComponent()
@@ -26,8 +27,17 @@ void UPlayerMeleeCombatComponent::Attack()
 	ADungeonClashCharacter* parentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
 	if (!parentCharacter) return;
 
-	// play the attack animation
-	parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
+	// can only attack if is on the ground
+	if (!parentCharacter->GetCharacterMovement()->IsMovingOnGround()) return;
+
+	if (!bIsAttacking)
+	{ // if is not attacking
+
+		bIsAttacking = true;
+	
+		// play the attack animation
+		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
+	}
 }
 
 void UPlayerMeleeCombatComponent::OnSlashBegin()
@@ -42,5 +52,7 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 
 void UPlayerMeleeCombatComponent::OnAttackEnd()
 {
+	bIsAttacking = false;
+
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "ATTACK END");
 }

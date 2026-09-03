@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* am_Attack;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsAttacking;
+
 	void Attack();
 	
 	void OnSlashBegin(); // Anim Notify State Start
