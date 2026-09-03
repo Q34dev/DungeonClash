@@ -42,6 +42,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UPlayerMeleeCombatComponent* CombatComp;
 
+	// A boolean indicating if movement input is ignored
+	UPROPERTY(BlueprintReadOnly)
+	bool movementDisabled;
+
+	// A function to enable/disable receiving movement input
+	UFUNCTION()
+	void SetIfCanMove(bool canMove);
+
 protected:
 
 	/** Jump Input Action */
@@ -94,6 +102,10 @@ public:
 	/** Handles look inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoLook(float Yaw, float Pitch);
+
+	/** Handles jump pressed inputs and takes the movementDisabled boolean into consideration */
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	virtual void DoJump();
 
 	/** Handles jump pressed inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")

@@ -37,6 +37,9 @@ void UPlayerMeleeCombatComponent::Attack()
 	
 		// play the attack animation
 		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
+
+		// disable movement during the attack
+		parentCharacter->SetIfCanMove(false);
 	}
 }
 
@@ -53,6 +56,13 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 void UPlayerMeleeCombatComponent::OnAttackEnd()
 {
 	bIsAttacking = false;
+
+	ADungeonClashCharacter* parentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
+	if (parentCharacter)
+	{
+		// reenable movement
+		parentCharacter->SetIfCanMove(true);
+	}
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "ATTACK END");
 }

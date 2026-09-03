@@ -64,7 +64,7 @@ void ADungeonClashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ADungeonClashCharacter::DoJump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
@@ -138,8 +138,20 @@ void ADungeonClashCharacter::DoLook(float Yaw, float Pitch)
 	}
 }
 
+void ADungeonClashCharacter::DoJump()
+{
+	// can only jump if movement is enabled
+	if (movementDisabled) return;
+
+	// signal the character to jump
+	Jump();
+}
+
 void ADungeonClashCharacter::DoJumpStart()
 {
+	// can only jump if movement is enabled
+	if (movementDisabled) return;
+
 	// signal the character to jump
 	Jump();
 }
@@ -148,4 +160,22 @@ void ADungeonClashCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void ADungeonClashCharacter::SetIfCanMove(bool canMove)
+{
+	if (GetController() == nullptr) return;
+
+	movementDisabled = !canMove;
+
+	if (canMove)
+	{
+		// enable movement (dont ignore movement input)
+		GetController()->SetIgnoreMoveInput(false);
+	}
+	else
+	{
+		// disable movement (ignore movement input)
+		GetController()->SetIgnoreMoveInput(true);
+	}
 }
