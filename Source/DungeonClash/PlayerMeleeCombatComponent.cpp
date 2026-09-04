@@ -14,6 +14,12 @@ UPlayerMeleeCombatComponent::UPlayerMeleeCombatComponent()
 void UPlayerMeleeCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (GetOwner())
+	{
+		// assign the parent character
+		parentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
+	}
 }
 
 // Called every frame
@@ -24,17 +30,28 @@ void UPlayerMeleeCombatComponent::TickComponent(float DeltaTime, ELevelTick Tick
 
 void UPlayerMeleeCombatComponent::Attack()
 {
-	ADungeonClashCharacter* parentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
-	if (!parentCharacter) return;
-
 	// can only attack if is on the ground
-	if (!parentCharacter->GetCharacterMovement()->IsMovingOnGround()) return;
+	if (parentCharacter && !parentCharacter->GetCharacterMovement()->IsMovingOnGround()) return;
 
 	if (!bIsAttacking)
 	{ // if is not attacking
 
-		bIsAttacking = true;
-	
+		StartAttack();
+	}
+	else if (!bIsBufferingAttack)
+	{ // if is attacking (but not buffered yet)
+
+		// set to buffer the attack to continue it after the slash ends
+		bIsBufferingAttack = true;
+	}
+}
+
+void UPlayerMeleeCombatComponent::StartAttack()
+{
+	bIsAttacking = true;
+
+	if (parentCharacter)
+	{
 		// play the attack animation
 		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
 
@@ -43,26 +60,34 @@ void UPlayerMeleeCombatComponent::Attack()
 	}
 }
 
+void UPlayerMeleeCombatComponent::EndAttack()
+{
+	bIsAttacking = false;
+	bIsBufferingAttack = false;
+
+	// reenable movement
+	if (parentCharacter) parentCharacter->SetIfCanMove(true);
+}
+
 void UPlayerMeleeCombatComponent::OnSlashBegin()
 {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "SLASH BEGIN");
+
 }
 
 void UPlayerMeleeCombatComponent::OnSlashEnd()
 {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "SLASH END");
+	if (!bIsBufferingAttack)
+	{ // if attack not buffered
+
+		// stop the attack
+		EndAttack();
+
+		// stop the attack animation
+		if (parentCharacter) parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(.2f);
+	}
 }
 
 void UPlayerMeleeCombatComponent::OnAttackEnd()
 {
-	bIsAttacking = false;
-
-	ADungeonClashCharacter* parentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
-	if (parentCharacter)
-	{
-		// reenable movement
-		parentCharacter->SetIfCanMove(true);
-	}
-
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, "ATTACK END");
+	EndAttack();
 }
