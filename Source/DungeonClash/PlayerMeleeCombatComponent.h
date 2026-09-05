@@ -27,12 +27,20 @@ public:
 	ADungeonClashCharacter* parentCharacter;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
-	UAnimMontage* am_Attack;
+	UAnimMontage* am_AttackCombo;
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* am_AttackFinish;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	float attackMontageBlendOutTime = .2f;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsAttacking;
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsBufferingAttack;
+
+	UPROPERTY(BlueprintReadWrite)
+	int attackComboIndex;
 
 	void Attack();
 

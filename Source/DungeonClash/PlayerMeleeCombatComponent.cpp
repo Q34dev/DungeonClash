@@ -49,11 +49,12 @@ void UPlayerMeleeCombatComponent::Attack()
 void UPlayerMeleeCombatComponent::StartAttack()
 {
 	bIsAttacking = true;
+	attackComboIndex = 0;
 
 	if (parentCharacter)
 	{
 		// play the attack animation
-		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
+		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackCombo);
 
 		// disable movement during the attack
 		parentCharacter->SetIfCanMove(false);
@@ -64,9 +65,16 @@ void UPlayerMeleeCombatComponent::EndAttack()
 {
 	bIsAttacking = false;
 	bIsBufferingAttack = false;
+	attackComboIndex = -1;
 
-	// reenable movement
-	if (parentCharacter) parentCharacter->SetIfCanMove(true);
+	if (parentCharacter)
+	{
+		// reenable movement
+		parentCharacter->SetIfCanMove(true);
+
+		// stop the attack animation
+		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+	}
 }
 
 void UPlayerMeleeCombatComponent::OnSlashBegin()
@@ -79,12 +87,38 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 	if (!bIsBufferingAttack)
 	{ // if attack not buffered
 
-		// stop the attack
-		EndAttack();
+		if (attackComboIndex == 0)
+		{ // after the first slash (in the middle of the combo animation)
 
-		// stop the attack animation
-		if (parentCharacter) parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(.2f);
+			// stop the attack
+			EndAttack();
+
+			// stop the attack animation
+			if (parentCharacter) parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+		}
 	}
+	else
+	{ // if attack buffered (player wants to continue the attack combo)
+
+		// next combo index
+		attackComboIndex++;
+
+		if (attackComboIndex == 2)
+		{ // combo finishing slash
+
+			if (parentCharacter)
+			{
+				// stop the attack animation
+				parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+
+				// play the combo finish animation
+				parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackFinish);
+			}
+		}
+	}
+
+	// stop buffering the attack
+	bIsBufferingAttack = false;
 }
 
 void UPlayerMeleeCombatComponent::OnAttackEnd()
