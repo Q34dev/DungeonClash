@@ -1,5 +1,6 @@
 #include "PlayerMeleeCombatComponent.h"
 #include "DungeonClashCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
@@ -19,6 +20,11 @@ void UPlayerMeleeCombatComponent::BeginPlay()
 	{
 		// assign the parent character
 		parentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
+	}
+
+	if (parentCharacter)
+	{
+		parentCharacter->SwordCol->OnComponentBeginOverlap.AddDynamic(this, &UPlayerMeleeCombatComponent::OnSwordOverlapBegin);
 	}
 }
 
@@ -65,6 +71,7 @@ void UPlayerMeleeCombatComponent::EndAttack()
 {
 	bIsAttacking = false;
 	bIsBufferingAttack = false;
+	bShouldDealDamage = false;
 	attackComboIndex = -1;
 
 	if (parentCharacter)
@@ -79,11 +86,13 @@ void UPlayerMeleeCombatComponent::EndAttack()
 
 void UPlayerMeleeCombatComponent::OnSlashBegin()
 {
-
+	bShouldDealDamage = true;
 }
 
 void UPlayerMeleeCombatComponent::OnSlashEnd()
 {
+	bShouldDealDamage = false;
+
 	if (!bIsBufferingAttack)
 	{ // if attack not buffered
 
@@ -112,7 +121,7 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 				parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
 
 				// play the combo finish animation
-				parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackFinish);
+				parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackFinish, 1.0f, EMontagePlayReturnType::MontageLength, attackFinishMontageStartTime);
 			}
 		}
 	}
@@ -124,4 +133,13 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 void UPlayerMeleeCombatComponent::OnAttackEnd()
 {
 	EndAttack();
+}
+
+void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bShouldDealDamage) return;
+	if (!IsValid(OtherActor)) return;
+	if (OtherActor == GetOwner()) return;
+	
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit %s (%s)"), *OtherActor->GetName(), *OtherComp->GetName()));
 }

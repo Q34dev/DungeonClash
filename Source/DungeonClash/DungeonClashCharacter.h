@@ -38,6 +38,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* SwordMesh;
 
+	// Sword collision
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UCapsuleComponent* SwordCol;
+
 	// Player Melee Combat component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UPlayerMeleeCombatComponent* CombatComp;

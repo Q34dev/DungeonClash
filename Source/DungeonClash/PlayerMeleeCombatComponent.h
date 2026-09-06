@@ -33,11 +33,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	float attackMontageBlendOutTime = .2f;
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	float attackFinishMontageStartTime = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsAttacking;
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsBufferingAttack;
+	UPROPERTY(BlueprintReadWrite)
+	bool bShouldDealDamage;
 
 	UPROPERTY(BlueprintReadWrite)
 	int attackComboIndex;
@@ -50,4 +54,8 @@ public:
 	void OnSlashBegin(); // Anim Notify State Start
 	void OnSlashEnd();  // Anim Notify State End
 	void OnAttackEnd(); // Anim Notify
+
+	// Sword collision
+	UFUNCTION()
+	void OnSwordOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

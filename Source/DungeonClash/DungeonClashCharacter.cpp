@@ -50,6 +50,10 @@ ADungeonClashCharacter::ADungeonClashCharacter()
 	// Create the sword mesh
 	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>("Sword");
 	SwordMesh->SetupAttachment(GetMesh(), "Sword_Socket");
+	
+	// Create the sword collision component
+	SwordCol = CreateDefaultSubobject<UCapsuleComponent>("SwordCollision");
+	SwordCol->SetupAttachment(SwordMesh);
 
 	// Create the combat component
 	CombatComp = CreateDefaultSubobject<UPlayerMeleeCombatComponent>(TEXT("PlayerMeleeCombat"));
