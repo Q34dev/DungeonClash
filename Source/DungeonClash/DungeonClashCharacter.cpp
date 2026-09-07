@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "DungeonClash.h"
 #include "PlayerMeleeCombatComponent.h"
+#include "HealthComponent.h"
 
 ADungeonClashCharacter::ADungeonClashCharacter()
 {
@@ -58,8 +59,24 @@ ADungeonClashCharacter::ADungeonClashCharacter()
 	// Create the combat component
 	CombatComp = CreateDefaultSubobject<UPlayerMeleeCombatComponent>(TEXT("PlayerMeleeCombat"));
 
+	// Create the health component
+	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
+
+void ADungeonClashCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	movementDisabled = false;
+
+	// assign the hitbox
+	HealthComp->Hitbox = GetCapsuleComponent();
+
+	// assign the OnDeath function
+	HealthComp->OnDeath.AddDynamic(this, &ADungeonClashCharacter::OnDeath);
 }
 
 void ADungeonClashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -110,6 +127,14 @@ void ADungeonClashCharacter::DoAttack()
 	if (!CombatComp) return;
 
 	CombatComp->Attack();
+}
+
+void ADungeonClashCharacter::OnDeath()
+{
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Player died!");
+
+	// destroy the character
+	Destroy();
 }
 
 void ADungeonClashCharacter::DoMove(float Right, float Forward)

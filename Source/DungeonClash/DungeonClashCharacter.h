@@ -46,6 +46,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UPlayerMeleeCombatComponent* CombatComp;
 
+	// Health component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UHealthComponent* HealthComp;
+
 	// A boolean indicating if movement input is ignored
 	UPROPERTY(BlueprintReadOnly)
 	bool movementDisabled;
@@ -83,6 +87,8 @@ public:
 
 protected:
 
+	virtual void BeginPlay() override;
+
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -96,6 +102,10 @@ protected:
 
 	/** Called for attack input */
 	void DoAttack();
+
+	// character death function
+	UFUNCTION()
+	void OnDeath();
 
 public:
 
