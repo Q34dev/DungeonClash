@@ -2,6 +2,7 @@
 #include "DungeonClashCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "HealthComponent.h"
 
 // Sets default values for this component's properties
 UPlayerMeleeCombatComponent::UPlayerMeleeCombatComponent()
@@ -142,4 +143,9 @@ void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* Overl
 	if (OtherActor == GetOwner()) return;
 	
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit %s (%s)"), *OtherActor->GetName(), *OtherComp->GetName()));
+
+	UHealthComponent* hitHealthComp = OtherActor->GetComponentByClass<UHealthComponent>();
+	if (!IsValid(hitHealthComp)) return;
+	
+	hitHealthComp->TakeDamage(attackDamage);
 }

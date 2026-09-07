@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	float attackFinishMontageStartTime = 0.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackDamage = 1.f;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsAttacking;
 	UPROPERTY(BlueprintReadWrite)
