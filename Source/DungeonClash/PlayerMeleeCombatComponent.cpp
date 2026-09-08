@@ -56,10 +56,14 @@ void UPlayerMeleeCombatComponent::Attack()
 void UPlayerMeleeCombatComponent::StartAttack()
 {
 	bIsAttacking = true;
+	bShouldDealDamage = false;
 	attackComboIndex = 0;
 
 	if (parentCharacter)
 	{
+		// disable sword collision
+		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+
 		// play the attack animation
 		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackCombo);
 
@@ -80,6 +84,9 @@ void UPlayerMeleeCombatComponent::EndAttack()
 		// reenable movement
 		parentCharacter->SetIfCanMove(true);
 
+		// disable sword collision
+		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+
 		// stop the attack animation
 		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
 	}
@@ -88,6 +95,12 @@ void UPlayerMeleeCombatComponent::EndAttack()
 void UPlayerMeleeCombatComponent::OnSlashBegin()
 {
 	bShouldDealDamage = true;
+
+	if (parentCharacter)
+	{
+		// enable sword collision
+		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+	}
 }
 
 void UPlayerMeleeCombatComponent::OnSlashEnd()
@@ -127,6 +140,12 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 		}
 	}
 
+	if (parentCharacter)
+	{
+		// disable sword collision
+		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+	}
+
 	// stop buffering the attack
 	bIsBufferingAttack = false;
 }
@@ -142,7 +161,7 @@ void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* Overl
 	if (!IsValid(OtherActor)) return;
 	if (OtherActor == GetOwner()) return;
 	
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit %s (%s)"), *OtherActor->GetName(), *OtherComp->GetName()));
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Hit %s (%s)"), *OtherActor->GetActorNameOrLabel(), *OtherComp->GetName()));
 
 	UHealthComponent* hitHealthComp = OtherActor->GetComponentByClass<UHealthComponent>();
 	if (!IsValid(hitHealthComp)) return;
