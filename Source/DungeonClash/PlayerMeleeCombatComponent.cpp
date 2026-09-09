@@ -161,10 +161,13 @@ void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* Overl
 	if (!IsValid(OtherActor)) return;
 	if (OtherActor == GetOwner()) return;
 	
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Hit %s (%s)"), *OtherActor->GetActorNameOrLabel(), *OtherComp->GetName()));
-
+	// check if the hit actor has a health component
 	UHealthComponent* hitHealthComp = OtherActor->GetComponentByClass<UHealthComponent>();
 	if (!IsValid(hitHealthComp)) return;
+
+	// check if the hit collision component was the hitbox of the hit actor
+	if (hitHealthComp->Hitbox != OtherComp) return;
 	
+	// deal damage to the hit actor
 	hitHealthComp->TakeDamage(attackDamage);
 }

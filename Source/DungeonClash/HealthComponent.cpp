@@ -24,8 +24,6 @@ void UHealthComponent::SetHealth(float health)
 	currentHealth = FMath::Clamp(health, 0.f, maxHealth);
 
 	OnHealthUpdate.Broadcast(currentHealth, prevHealth, maxHealth);
-
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s health set to: %f"), *GetOwner()->GetActorNameOrLabel(), currentHealth));
 }
 
 void UHealthComponent::TakeDamage(float damage)
