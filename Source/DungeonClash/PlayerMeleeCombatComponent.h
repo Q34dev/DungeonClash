@@ -5,6 +5,7 @@
 #include "PlayerMeleeCombatComponent.generated.h"
 
 class ADungeonClashCharacter;
+class UHealthComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DUNGEONCLASH_API UPlayerMeleeCombatComponent : public UActorComponent
@@ -37,7 +38,9 @@ public:
 	float attackFinishMontageStartTime = 0.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
-	float attackDamage = 1.f;
+	float attackComboDamage = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackFinishDamage = 1.f;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsAttacking;
@@ -57,6 +60,8 @@ public:
 	void OnSlashBegin(); // Anim Notify State Start
 	void OnSlashEnd();  // Anim Notify State End
 	void OnAttackEnd(); // Anim Notify
+
+	void Hit(UHealthComponent* hitActor);
 
 	// Sword collision
 	UFUNCTION()

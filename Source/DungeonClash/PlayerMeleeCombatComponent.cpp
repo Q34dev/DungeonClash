@@ -155,6 +155,16 @@ void UPlayerMeleeCombatComponent::OnAttackEnd()
 	EndAttack();
 }
 
+void UPlayerMeleeCombatComponent::Hit(UHealthComponent* hitActor)
+{
+	// check if is the finishing hit
+	bool finishHit = attackComboIndex == 2;
+	float dealtDamage = finishHit ? attackFinishDamage : attackComboDamage;
+
+	// deal damage to the hit actor
+	hitActor->TakeDamage(dealtDamage);
+}
+
 void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!bShouldDealDamage) return;
@@ -168,6 +178,5 @@ void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* Overl
 	// check if the hit collision component was the hitbox of the hit actor
 	if (hitHealthComp->Hitbox != OtherComp) return;
 	
-	// deal damage to the hit actor
-	hitHealthComp->TakeDamage(attackDamage);
+	Hit(hitHealthComp);
 }
