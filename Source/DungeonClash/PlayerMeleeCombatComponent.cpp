@@ -180,3 +180,11 @@ void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* Overl
 	
 	Hit(hitHealthComp);
 }
+
+void UPlayerMeleeCombatComponent::PlaySound(USoundBase* SB)
+{
+	if (!IsValid(SB)) return;
+	if (!IsValid(GetWorld())) return;
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, FVector::Zero());
+}
