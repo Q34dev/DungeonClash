@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "PlayerMeleeCombatComponent.h"
+#include "HealthComponent.h"
 #include "DungeonClashCharacter.generated.h"
 
 class USpringArmComponent;
@@ -136,5 +137,11 @@ public:
 
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	FOnHealthInit& GetOnHealthInitEvent() const;
+	FOnDamageReceived& GetOnDamageReceivedEvent() const;
+
+	UFUNCTION(BlueprintCallable)
+	void DEBUG_DamageThePlayer();
 };
 

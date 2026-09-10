@@ -14,6 +14,8 @@ void UHealthComponent::BeginPlay()
 	// set health to the max value at the start
 	currentHealth = maxHealth;
 	SetHealth(currentHealth);
+
+	OnHealthInit.Broadcast(maxHealth);
 }
 
 void UHealthComponent::SetHealth(float health)
@@ -30,8 +32,12 @@ void UHealthComponent::TakeDamage(float damage)
 {
 	if (bIsDead) return;
 
+	float previousHealth = currentHealth;
+
 	// set health to the decreased value
 	SetHealth(currentHealth - damage);
+
+	OnDamageReceived.Broadcast(currentHealth, previousHealth);
 
 	if (currentHealth <= 0.f)
 	{

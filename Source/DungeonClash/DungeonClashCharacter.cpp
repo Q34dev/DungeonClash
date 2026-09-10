@@ -191,6 +191,29 @@ void ADungeonClashCharacter::DoJumpEnd()
 	StopJumping();
 }
 
+FOnHealthInit& ADungeonClashCharacter::GetOnHealthInitEvent() const
+{
+	FOnHealthInit NullReturn;
+	if (!IsValid(HealthComp)) return NullReturn;
+
+	return HealthComp->OnHealthInit;
+}
+
+FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
+{
+	FOnDamageReceived NullReturn;
+	if (!IsValid(HealthComp)) return NullReturn;
+
+	return HealthComp->OnDamageReceived;
+}
+
+void ADungeonClashCharacter::DEBUG_DamageThePlayer()
+{
+	if (!IsValid(HealthComp)) return;
+
+	HealthComp->TakeDamage(10.f);
+}
+
 void ADungeonClashCharacter::SetIfCanMove(bool canMove)
 {
 	if (GetController() == nullptr) return;
