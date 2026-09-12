@@ -44,6 +44,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float attackFinishDamage = 1.f;
 
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_AttackCombo;
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_AttackFinish;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsAttacking;
 	UPROPERTY(BlueprintReadWrite)

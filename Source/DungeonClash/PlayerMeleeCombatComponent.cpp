@@ -101,6 +101,11 @@ void UPlayerMeleeCombatComponent::OnSlashBegin()
 		// enable sword collision
 		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 	}
+
+	if (attackComboIndex == 2)
+		PlaySound(sb_AttackFinish);
+	else
+		PlaySound(sb_AttackCombo);
 }
 
 void UPlayerMeleeCombatComponent::OnSlashEnd()
