@@ -48,6 +48,10 @@ public:
 	USoundBase* sb_AttackCombo;
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_AttackFinish;
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_HitCombo;
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_HitFinish;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsAttacking;

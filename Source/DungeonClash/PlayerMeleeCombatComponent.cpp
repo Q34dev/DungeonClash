@@ -168,6 +168,11 @@ void UPlayerMeleeCombatComponent::Hit(UHealthComponent* hitActor)
 
 	// deal damage to the hit actor
 	hitActor->TakeDamage(dealtDamage);
+
+	if (finishHit)
+		PlaySound(sb_HitFinish);
+	else
+		PlaySound(sb_HitCombo);
 }
 
 void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
