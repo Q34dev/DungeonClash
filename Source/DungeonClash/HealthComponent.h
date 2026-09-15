@@ -6,8 +6,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHealthUpdate, float, newHealth, float, previousHealth, float, maxHealth);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthInit, float /* maxHealth */);
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnDamageReceived, float /* newHealth */, float /* previousHealth */);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnDamageReceived, float /* newHealth */, float /* previousHealth */, float /* maxHealth */);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DUNGEONCLASH_API UHealthComponent : public UActorComponent
@@ -54,6 +53,5 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthUpdate OnHealthUpdate;
 
-	FOnHealthInit OnHealthInit;
 	FOnDamageReceived OnDamageReceived;
 };

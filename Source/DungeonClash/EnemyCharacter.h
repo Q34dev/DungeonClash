@@ -31,6 +31,9 @@ public:
 	// Health bar widget component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UWidgetComponent* HealthBarWidgetComp;
+	
+	UPROPERTY()
+	class UHealthBar* HealthBar;
 
 protected:
 

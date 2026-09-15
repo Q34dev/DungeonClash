@@ -28,13 +28,9 @@ protected:
 	FName PreviousHealthParameterName = FName("PreviousHealth");
 
 private:
-
 	void BindPlayerEvents();
 	void UnbindPlayerEvents();
 
-	void OnHealthInit(const float maxHealth);
-	void OnDamageReceived(const float newHealth, const float previousHealth);
-	
 	UFUNCTION(BlueprintCallable)
 	void LerpCachedHealthValue(const float Value);
 	
@@ -43,9 +39,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Interpolation")
 	float interpSpeed = 10.f;
 
-	float maxHealthVal = 1.f;
-
 	// normalized health values - between 0 & 1
 	float normalizedHealthVal = 1.f;
 	float normalizedPreviousHealthVal = 1.f;
+
+public:
+	void OnDamageReceived(const float newHealth, const float previousHealth, const float maxHealth);
 };

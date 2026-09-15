@@ -191,14 +191,6 @@ void ADungeonClashCharacter::DoJumpEnd()
 	StopJumping();
 }
 
-FOnHealthInit& ADungeonClashCharacter::GetOnHealthInitEvent() const
-{
-	FOnHealthInit NullReturn;
-	if (!IsValid(HealthComp)) return NullReturn;
-
-	return HealthComp->OnHealthInit;
-}
-
 FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
 {
 	FOnDamageReceived NullReturn;

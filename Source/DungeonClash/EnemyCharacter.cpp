@@ -2,6 +2,7 @@
 #include "HealthComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "UI/HealthBar.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -28,6 +29,10 @@ void AEnemyCharacter::BeginPlay()
 	// assign the Health Component functions
 	HealthComp->OnHealthUpdate.AddDynamic(this, &AEnemyCharacter::OnHealthUpdate);
 	HealthComp->OnDeath.AddDynamic(this, &AEnemyCharacter::OnDeath);
+
+	// Get the health bar class
+	if (IsValid(HealthBarWidgetComp->GetWidget()))
+		HealthBar = Cast<UHealthBar>(HealthBarWidgetComp->GetWidget());
 }
 
 // Called every frame
@@ -46,6 +51,9 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 {
 	if (newHealth < previousHealth)
 	{ // enemy was damaged
+
+		// update the health bar
+		if (IsValid(HealthBar)) HealthBar->OnDamageReceived(newHealth, previousHealth, maxHealth);
 
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s hit! Health: %d -> %d"), *GetActorNameOrLabel(), FMath::CeilToInt(previousHealth), FMath::CeilToInt(newHealth)));
 	}

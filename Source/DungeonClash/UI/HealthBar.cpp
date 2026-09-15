@@ -28,7 +28,6 @@ void UHealthBar::BindPlayerEvents()
 		{
 			if (const ADungeonClashCharacter* CustomLocalPawn = Cast<ADungeonClashCharacter>(LocalPawn))
 			{
-				CustomLocalPawn->GetOnHealthInitEvent().AddUObject(this, &UHealthBar::OnHealthInit);
 				CustomLocalPawn->GetOnDamageReceivedEvent().AddUObject(this, &UHealthBar::OnDamageReceived);
 			}
 		}
@@ -43,23 +42,16 @@ void UHealthBar::UnbindPlayerEvents()
 		{
 			if (const ADungeonClashCharacter* CustomLocalPawn = Cast<ADungeonClashCharacter>(LocalPawn))
 			{
-				CustomLocalPawn->GetOnHealthInitEvent().RemoveAll(this);
 				CustomLocalPawn->GetOnDamageReceivedEvent().RemoveAll(this);
 			}
 		}
 	}
 }
 
-void UHealthBar::OnHealthInit(const float maxHealth)
+void UHealthBar::OnDamageReceived(const float newHealth, const float previousHealth, const float maxHealth)
 {
-	maxHealthVal = maxHealth;
-	normalizedHealthVal = 1.f;
-}
-
-void UHealthBar::OnDamageReceived(const float newHealth, const float previousHealth)
-{
-	normalizedHealthVal = newHealth / maxHealthVal;
-	normalizedPreviousHealthVal = previousHealth / maxHealthVal;
+	normalizedHealthVal = newHealth / maxHealth;
+	normalizedPreviousHealthVal = previousHealth / maxHealth;
 
 	SetHealthMaterialParameter(HealthParameterName, normalizedHealthVal);
 

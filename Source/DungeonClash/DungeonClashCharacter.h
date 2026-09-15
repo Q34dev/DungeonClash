@@ -138,7 +138,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	FOnHealthInit& GetOnHealthInitEvent() const;
 	FOnDamageReceived& GetOnDamageReceivedEvent() const;
 
 	UFUNCTION(BlueprintCallable)
