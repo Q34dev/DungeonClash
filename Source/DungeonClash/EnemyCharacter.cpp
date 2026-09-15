@@ -30,9 +30,15 @@ void AEnemyCharacter::BeginPlay()
 	HealthComp->OnHealthUpdate.AddDynamic(this, &AEnemyCharacter::OnHealthUpdate);
 	HealthComp->OnDeath.AddDynamic(this, &AEnemyCharacter::OnDeath);
 
-	// Get the health bar class
-	if (IsValid(HealthBarWidgetComp->GetWidget()))
-		HealthBar = Cast<UHealthBar>(HealthBarWidgetComp->GetWidget());
+	if (IsValid(HealthBarWidgetComp))
+	{
+		// get the health bar class
+		if (IsValid(HealthBarWidgetComp->GetWidget()))
+			HealthBar = Cast<UHealthBar>(HealthBarWidgetComp->GetWidget());
+
+		// hide the health bar at the start
+		HealthBarWidgetComp->SetVisibility(false);
+	}
 }
 
 // Called every frame
@@ -51,6 +57,9 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 {
 	if (newHealth < previousHealth)
 	{ // enemy was damaged
+
+		// show the health bar
+		HealthBarWidgetComp->SetVisibility(true);
 
 		// update the health bar
 		if (IsValid(HealthBar)) HealthBar->OnDamageReceived(newHealth, previousHealth, maxHealth);
