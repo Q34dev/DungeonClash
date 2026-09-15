@@ -1,6 +1,7 @@
 #include "EnemyCharacter.h"
 #include "HealthComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -10,6 +11,10 @@ AEnemyCharacter::AEnemyCharacter()
 
 	// Create the health component
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("EnemyHealthComponent"));
+
+	// Create the health bar widget component
+	HealthBarWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHealthBar"));
+	HealthBarWidgetComp->SetupAttachment(GetMesh());
 }
 
 // Called when the game starts or when spawned

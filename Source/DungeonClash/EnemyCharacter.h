@@ -28,6 +28,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UHealthComponent* HealthComp;
 
+	// Health bar widget component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UWidgetComponent* HealthBarWidgetComp;
+
 protected:
 
 	UFUNCTION()
