@@ -13,7 +13,6 @@ class DUNGEONCLASH_API UHealthBar : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> DamageAnim = nullptr;
@@ -28,8 +27,6 @@ protected:
 	FName PreviousHealthParameterName = FName("PreviousHealth");
 
 private:
-	void BindPlayerEvents();
-	void UnbindPlayerEvents();
 
 	UFUNCTION(BlueprintCallable)
 	void LerpCachedHealthValue(const float Value);
