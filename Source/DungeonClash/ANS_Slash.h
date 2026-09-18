@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DungeonClashCharacter.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "ANS_Slash.generated.h"
 

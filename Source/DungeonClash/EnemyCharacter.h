@@ -45,6 +45,9 @@ public:
 
 	void Attack();
 
+	void OnSlashBegin(); // Anim Notify State Start
+	void OnSlashEnd();  // Anim Notify State End
+
 	// Attack collision overlap method
 	UFUNCTION()
 	void OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -56,4 +59,6 @@ protected:
 	
 	UFUNCTION()
 	void OnDeath();
+
+	bool bShouldDealDamage;
 };

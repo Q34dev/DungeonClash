@@ -69,12 +69,34 @@ void AEnemyCharacter::Attack()
 	// stop moving
 	GetCharacterMovement()->StopMovementImmediately();
 
+	bShouldDealDamage = false;
+
+	// disable sword collision
+	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
+
 	// play the attack animation
 	if (IsValid(am_Attack)) GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
 }
 
+void AEnemyCharacter::OnSlashBegin()
+{
+	bShouldDealDamage = true;
+
+	// enable sword collision
+	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
+}
+
+void AEnemyCharacter::OnSlashEnd()
+{
+	bShouldDealDamage = false;
+
+	// disable sword collision
+	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
+}
+
 void AEnemyCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!bShouldDealDamage) return;
 	if (!IsValid(OtherActor)) return;
 	if (OtherActor == this) return;
 
