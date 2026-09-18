@@ -94,13 +94,26 @@ void AEnemyCharacter::OnSlashEnd()
 	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
 }
 
+void AEnemyCharacter::Hit(UHealthComponent* hitActor)
+{
+	// deal damage to the hit actor
+	hitActor->TakeDamage(attackDamage);
+}
+
 void AEnemyCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!bShouldDealDamage) return;
 	if (!IsValid(OtherActor)) return;
 	if (OtherActor == this) return;
+	
+	// check if the hit actor has a health component
+	UHealthComponent* hitHealthComp = OtherActor->GetComponentByClass<UHealthComponent>();
+	if (!IsValid(hitHealthComp)) return;
 
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Hit: %s (%s)"), *OtherActor->GetActorNameOrLabel(), *OtherComp->GetName()));
+	// check if the hit collision component was the hitbox of the hit actor
+	if (hitHealthComp->Hitbox != OtherComp) return;
+
+	Hit(hitHealthComp);
 }
 
 void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, float maxHealth)
@@ -113,8 +126,6 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 
 		// update the health bar
 		if (IsValid(HealthBar)) HealthBar->OnDamageReceived(newHealth, previousHealth, maxHealth);
-
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s hit! Health: %d -> %d"), *GetActorNameOrLabel(), FMath::CeilToInt(previousHealth), FMath::CeilToInt(newHealth)));
 	}
 }
 

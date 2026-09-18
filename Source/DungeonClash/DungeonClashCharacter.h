@@ -139,8 +139,5 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	FOnDamageReceived& GetOnDamageReceivedEvent() const;
-
-	UFUNCTION(BlueprintCallable)
-	void DEBUG_DamageThePlayer();
 };
 

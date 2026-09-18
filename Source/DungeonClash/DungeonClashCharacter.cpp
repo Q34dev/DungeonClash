@@ -199,13 +199,6 @@ FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
 	return HealthComp->OnDamageReceived;
 }
 
-void ADungeonClashCharacter::DEBUG_DamageThePlayer()
-{
-	if (!IsValid(HealthComp)) return;
-
-	HealthComp->TakeDamage(10.f);
-}
-
 void ADungeonClashCharacter::SetIfCanMove(bool canMove)
 {
 	if (GetController() == nullptr) return;

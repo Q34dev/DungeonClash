@@ -43,10 +43,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* am_Attack;
 
+	// Enemy attack damage value
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackDamage = 1.f;
+
 	void Attack();
 
 	void OnSlashBegin(); // Anim Notify State Start
 	void OnSlashEnd();  // Anim Notify State End
+
+	void Hit(UHealthComponent* hitActor);
 
 	// Attack collision overlap method
 	UFUNCTION()

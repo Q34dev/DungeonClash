@@ -17,19 +17,22 @@ EBTNodeResult::Type UBTT_FindPlayerLocation::ExecuteTask(UBehaviorTreeComponent&
 
 	// get navigation system
 	UNavigationSystemV1* pNavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-
-	// get player controller reference
-	APlayerController* pPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	APawn* pPlayer = pPlayerController->GetPawn();
-
-	if (pNavSystem)
+	if (IsValid(pNavSystem))
 	{
-		// set the target location to player location
-		pAIController->GetBlackboardComp()->SetValueAsVector(EnemyKeys::targetLocation, pPlayer->GetActorLocation());
+		// get player controller reference
+		APlayerController* pPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (IsValid(pPlayerController))
+		{
+			APawn* pPlayer = pPlayerController->GetPawn();
+			if (IsValid(pPlayer))
+			{
+				// set the target location to player location
+				pAIController->GetBlackboardComp()->SetValueAsVector(EnemyKeys::targetLocation, pPlayer->GetActorLocation());
+			}
+		}
 	}
 
-	// finish execution
+	// finish task execution
 	FinishLatentTask(a_pBehaviorTreeComp, EBTNodeResult::Succeeded);
-	
 	return EBTNodeResult::Succeeded;
 }
