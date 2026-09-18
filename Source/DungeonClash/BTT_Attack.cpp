@@ -16,28 +16,21 @@ EBTNodeResult::Type UBTT_Attack::ExecuteTask(UBehaviorTreeComponent& a_pBehavior
 	// get enemy character
 	AEnemyCharacter* pEnemy = Cast<AEnemyCharacter>(pAIController->GetPawn());
 
-	if (AttackMontageFinished(pEnemy))
-	{ // if the attack montage is finished
+	if (!pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isAttacking))
+	{ // if the enemy is not attacking yet
 
-		// check if can attack (can attack if player is in range)
-		bool bCanAttack = pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isPlayerInRange);
-		if (bCanAttack)
-		{
+		// check if player is in range
+		bool bPlayerInRange = pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isPlayerInRange);
+
+		if (bPlayerInRange)
+		{ // if player is in range
+
 			// run the enemy attack method
 			pEnemy->Attack();
 		}
 	}
 
-	// finish execution
+	// finish task execution
 	FinishLatentTask(a_pBehaviorTreeComp, EBTNodeResult::Succeeded);
-
 	return EBTNodeResult::Succeeded;
-}
-
-bool UBTT_Attack::AttackMontageFinished(AEnemyCharacter* a_pEnemy)
-{
-	UAnimInstance* pAnimInstance = a_pEnemy->GetMesh()->GetAnimInstance();
-	if (!IsValid(pAnimInstance)) return false;
-
-	return pAnimInstance->Montage_GetIsStopped(a_pEnemy->am_Attack);
 }

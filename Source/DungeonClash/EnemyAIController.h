@@ -10,7 +10,7 @@ class DUNGEONCLASH_API AEnemyAIController : public AAIController
 	GENERATED_BODY()
 	
 public:
-	AEnemyAIController(FObjectInitializer const& a_ppObjectInit);
+	AEnemyAIController(FObjectInitializer const& a_pObjectInit);
 
 	void BeginPlay() override;
 	void OnPossess(APawn* a_pPawn) override;

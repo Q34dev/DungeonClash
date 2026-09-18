@@ -15,9 +15,18 @@ EBTNodeResult::Type UBTT_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& a_pBeh
 	// get AI controller
 	auto const pAIController = Cast<AEnemyAIController>(a_pBehaviorTreeComp.GetAIOwner());
 
+	if (pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isPlayerInRange)
+	 || pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isAttacking))
+	{ // if the player is in range or enemy is currently attacking
+
+		// don't move towards the player
+		// finish task execution
+		FinishLatentTask(a_pBehaviorTreeComp, EBTNodeResult::Succeeded);
+		return EBTNodeResult::Succeeded;
+	}
+
 	// get navigation system
 	UNavigationSystemV1* pNavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-
 	if (pNavSystem)
 	{
 		// get player location (the set target location)
@@ -27,8 +36,7 @@ EBTNodeResult::Type UBTT_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& a_pBeh
 		pAIController->MoveToLocation(pLocation);
 	}
 
-	// finish execution
+	// finish task execution
 	FinishLatentTask(a_pBehaviorTreeComp, EBTNodeResult::Succeeded);
-
 	return EBTNodeResult::Succeeded;
 }

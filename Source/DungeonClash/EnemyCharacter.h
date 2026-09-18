@@ -35,11 +35,19 @@ public:
 	UPROPERTY()
 	class UHealthBar* HealthBar;
 
+	// Attack collision component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USphereComponent* AttackCol;
+
 	// Attack animation montage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* am_Attack;
 
 	void Attack();
+
+	// Attack collision overlap method
+	UFUNCTION()
+	void OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
 

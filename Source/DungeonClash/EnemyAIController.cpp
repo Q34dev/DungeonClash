@@ -4,7 +4,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
-AEnemyAIController::AEnemyAIController(FObjectInitializer const& a_ppObjectInit)
+AEnemyAIController::AEnemyAIController(FObjectInitializer const& a_pObjectInit)
 {
 	// get the behaviour tree from the reference
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> treeFinder(TEXT("/Script/AIModule.BehaviorTree'/Game/Enemies/BT_Enemy.BT_Enemy'"));
@@ -14,10 +14,10 @@ AEnemyAIController::AEnemyAIController(FObjectInitializer const& a_ppObjectInit)
 	}
 
 	// create the behavior tree component
-	m_pBehaviorTreeComp = a_ppObjectInit.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("BehaviorTreeComp"));
+	m_pBehaviorTreeComp = a_pObjectInit.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("BehaviorTreeComp"));
 
 	// create the blackboard component
-	m_pBlackboardComp = a_ppObjectInit.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
+	m_pBlackboardComp = a_pObjectInit.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
 }
 
 void AEnemyAIController::BeginPlay()

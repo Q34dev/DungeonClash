@@ -1,8 +1,10 @@
 #include "EnemyCharacter.h"
 #include "HealthComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "UI/HealthBar.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -16,6 +18,10 @@ AEnemyCharacter::AEnemyCharacter()
 	// Create the health bar widget component
 	HealthBarWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHealthBar"));
 	HealthBarWidgetComp->SetupAttachment(GetMesh());
+
+	// Create the attack collision component
+	AttackCol = CreateDefaultSubobject<USphereComponent>("AttackCollision");
+	AttackCol->SetupAttachment(GetMesh(), "Attack_Socket");
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +45,9 @@ void AEnemyCharacter::BeginPlay()
 		// hide the health bar at the start
 		HealthBarWidgetComp->SetVisibility(false);
 	}
+
+	// bind the attack collision overlap method
+	AttackCol->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::OnAttackOverlapBegin);
 }
 
 // Called every frame
@@ -57,8 +66,19 @@ void AEnemyCharacter::Attack()
 {
 	if (!IsValid(GetMesh()) || !IsValid(GetMesh()->GetAnimInstance())) return;
 	
+	// stop moving
+	GetCharacterMovement()->StopMovementImmediately();
+
 	// play the attack animation
 	if (IsValid(am_Attack)) GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
+}
+
+void AEnemyCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!IsValid(OtherActor)) return;
+	if (OtherActor == this) return;
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Hit: %s (%s)"), *OtherActor->GetActorNameOrLabel(), *OtherComp->GetName()));
 }
 
 void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, float maxHealth)
