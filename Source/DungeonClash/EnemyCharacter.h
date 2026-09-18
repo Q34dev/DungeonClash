@@ -35,6 +35,12 @@ public:
 	UPROPERTY()
 	class UHealthBar* HealthBar;
 
+	// Attack animation montage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* am_Attack;
+
+	void Attack();
+
 protected:
 
 	UFUNCTION()

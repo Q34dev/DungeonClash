@@ -53,6 +53,14 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void AEnemyCharacter::Attack()
+{
+	if (!IsValid(GetMesh()) || !IsValid(GetMesh()->GetAnimInstance())) return;
+	
+	// play the attack animation
+	if (IsValid(am_Attack)) GetMesh()->GetAnimInstance()->Montage_Play(am_Attack);
+}
+
 void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, float maxHealth)
 {
 	if (newHealth < previousHealth)
