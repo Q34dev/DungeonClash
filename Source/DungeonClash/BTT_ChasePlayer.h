@@ -12,4 +12,7 @@ class DUNGEONCLASH_API UBTT_ChasePlayer : public UBTTask_BlackboardBase
 public:
 	UBTT_ChasePlayer(FObjectInitializer const& a_pObjectInit);
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& a_pBehaviorTreeComp, uint8* a_pNodeMem);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float rotationInterpSpeed = 1.f;
 };

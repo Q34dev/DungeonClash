@@ -30,17 +30,28 @@ EBTNodeResult::Type UBTT_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& a_pBeh
 	// get player location (the set target location)
 	FVector targetLocation = pAIController->GetBlackboardComp()->GetValueAsVector(EnemyKeys::targetLocation);
 
+	APawn* enemyPawn = pAIController->GetPawn();
+	if (IsValid(enemyPawn))
+	{
+		// rotate towards the player:
+
+		FVector enemyLocation = enemyPawn->GetActorLocation();
+		FRotator enemyRotation = enemyPawn->GetActorRotation();
+
+		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(enemyLocation, targetLocation);
+
+		FRotator interpRotation = FMath::RInterpTo(enemyRotation, targetRotation, GetWorld()->GetDeltaSeconds(), rotationInterpSpeed);
+		interpRotation.Roll = 0.f;
+		interpRotation.Pitch = 0.f;
+
+		enemyPawn->SetActorRotation(interpRotation);
+	}
+
 	if (isPlayerInRange)
 	{ // if the player is in range
 
-		APawn* enemyPawn = pAIController->GetPawn();
-		if (IsValid(enemyPawn))
-		{
-			// rotate towards the player
-			FVector enemyLocation = enemyPawn->GetActorLocation();
-			FRotator fRot = UKismetMathLibrary::FindLookAtRotation(enemyLocation, targetLocation);
-			enemyPawn->SetActorRotation(fRot);
-		}
+		// stop moving
+		pAIController->StopMovement();
 
 		// don't move towards the player
 		// finish task execution
