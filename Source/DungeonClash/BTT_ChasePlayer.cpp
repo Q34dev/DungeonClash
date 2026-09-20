@@ -4,6 +4,7 @@
 #include "EnemyAIController.h"
 #include "EnemyKeys.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UBTT_ChasePlayer::UBTT_ChasePlayer(FObjectInitializer const& a_pObjectInit)
 {
@@ -15,9 +16,31 @@ EBTNodeResult::Type UBTT_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& a_pBeh
 	// get AI controller
 	auto const pAIController = Cast<AEnemyAIController>(a_pBehaviorTreeComp.GetAIOwner());
 
-	if (pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isPlayerInRange)
-	 || pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isAttacking))
-	{ // if the player is in range or enemy is currently attacking
+	bool isPlayerInRange = pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isPlayerInRange);
+	bool isAttacking = pAIController->GetBlackboardComp()->GetValueAsBool(EnemyKeys::isAttacking);
+
+	if (isAttacking)
+	{ // during an attack
+		// don't move towards the player
+		// finish task execution
+		FinishLatentTask(a_pBehaviorTreeComp, EBTNodeResult::Succeeded);
+		return EBTNodeResult::Succeeded;
+	}
+
+	// get player location (the set target location)
+	FVector targetLocation = pAIController->GetBlackboardComp()->GetValueAsVector(EnemyKeys::targetLocation);
+
+	if (isPlayerInRange)
+	{ // if the player is in range
+
+		APawn* enemyPawn = pAIController->GetPawn();
+		if (IsValid(enemyPawn))
+		{
+			// rotate towards the player
+			FVector enemyLocation = enemyPawn->GetActorLocation();
+			FRotator fRot = UKismetMathLibrary::FindLookAtRotation(enemyLocation, targetLocation);
+			enemyPawn->SetActorRotation(fRot);
+		}
 
 		// don't move towards the player
 		// finish task execution
@@ -29,11 +52,8 @@ EBTNodeResult::Type UBTT_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& a_pBeh
 	UNavigationSystemV1* pNavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
 	if (pNavSystem)
 	{
-		// get player location (the set target location)
-		FVector pLocation = pAIController->GetBlackboardComp()->GetValueAsVector(EnemyKeys::targetLocation);
-
 		// move towards the player
-		pAIController->MoveToLocation(pLocation);
+		pAIController->MoveToLocation(targetLocation);
 	}
 
 	// finish task execution
