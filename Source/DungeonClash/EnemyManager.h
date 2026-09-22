@@ -1,0 +1,46 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "EnemyManager.generated.h"
+
+UCLASS()
+class DUNGEONCLASH_API AEnemyManager : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	AEnemyManager();
+
+	// A container that stores already spawned enemy actors
+	TArray<AActor*> EnemyPool;
+
+	// The number of enemies to spawn in each wave
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
+	TArray<int> enemySpawnCounts;
+
+	// A container that stores actors representing enemy spawn points
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Management")
+	TArray<AActor*> SpawnPoints;
+
+	// The number of waves
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
+	int waveCount = 1;
+
+	// The index of the currently active wave
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Management")
+	int currentWaveIndex = 0;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Methods for managing enemy waves
+	void StartWave(int waveIndex);
+	void StartNextWave();
+};
