@@ -8,8 +8,8 @@ UCLASS()
 class DUNGEONCLASH_API AEnemyManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AEnemyManager();
 
@@ -21,7 +21,7 @@ public:
 	TArray<int> enemySpawnCounts;
 
 	// A container that stores actors representing enemy spawn points
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Management")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
 	TArray<AActor*> SpawnPoints;
 
 	// The number of waves
@@ -44,7 +44,7 @@ protected:
 	UPROPERTY()
 	class AEnemyRoomManager* CurrentEnemyRoom;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

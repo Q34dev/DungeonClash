@@ -6,7 +6,7 @@
 // Sets default values
 AEnemyRoomManager::AEnemyRoomManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Create the entrance trigger collision component
@@ -46,9 +46,14 @@ void AEnemyRoomManager::SetBarriersActive(bool active)
 
 void AEnemyRoomManager::OnEntranceTriggerOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (bIsEnemyRoomActive || bIsEnemyRoomFinished) return;
+	// if the room is not active already and not finished yet:
+
 	if (!IsValid(OtherActor)) return;
 	if (!Cast<ADungeonClashCharacter>(OtherActor)) return;
 	// if player finished overlapping with the trigger
+
+	bIsEnemyRoomActive = true;
 
 	// activate the barriers to lock the player inside the room
 	SetBarriersActive(true);
@@ -58,4 +63,13 @@ void AEnemyRoomManager::OnEntranceTriggerOverlapEnd(UPrimitiveComponent* Overlap
 		// set this room as the current enemy room
 		EnemyManager->SetCurrentEnemyRoom(this);
 	}
+}
+
+void AEnemyRoomManager::OnAllWavesFinished()
+{
+	bIsEnemyRoomFinished = true;
+	bIsEnemyRoomActive = false;
+
+	// deactivate the barriers to let the player out
+	SetBarriersActive(false);
 }

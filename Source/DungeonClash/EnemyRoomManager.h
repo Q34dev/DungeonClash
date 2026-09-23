@@ -8,8 +8,8 @@ UCLASS()
 class DUNGEONCLASH_API AEnemyRoomManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AEnemyRoomManager();
 
@@ -29,7 +29,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+	// Are enemy waves currently spawning in this room
+	bool bIsEnemyRoomActive;
+
+	// Did the player defeat all the enemy waves in this room
+	bool bIsEnemyRoomFinished;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -39,4 +45,7 @@ public:
 	// Entrance trigger overlap method
 	UFUNCTION()
 	void OnEntranceTriggerOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	// A method to signal when the player finished all the room's enemy waves
+	void OnAllWavesFinished();
 };

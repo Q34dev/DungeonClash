@@ -6,7 +6,7 @@
 // Sets default values
 AEnemyManager::AEnemyManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -53,7 +53,7 @@ void AEnemyManager::StartWave(int waveIndex)
 
 			// get the enemy from the pool
 			AEnemyCharacter* PooledEnemy = Cast<AEnemyCharacter>(EnemyPool[i]);
-			
+
 			// disable collision temporarily (in case of colliding with another actor)
 			PooledEnemy->SetActorEnableCollision(false);
 
@@ -90,4 +90,13 @@ void AEnemyManager::OnEnemyDied(class AEnemyCharacter* DeadEnemy)
 {
 	// update the enemy count
 	enemiesLeftInWave--;
+
+	if (enemiesLeftInWave <= 0)
+	{ // when all enemies in the wave died
+
+		if (IsValid(CurrentEnemyRoom))
+		{
+			CurrentEnemyRoom->OnAllWavesFinished();
+		}
+	}
 }
