@@ -17,6 +17,13 @@ void AEnemyManager::BeginPlay()
 
 	// add all enemies in the level to the pool
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyCharacter::StaticClass(), EnemyPool);
+
+	waveCount = 0;
+	wavesLeft = 0;
+	currentWaveIndex = 0;
+	currentEnemyIndex = 0;
+	enemiesLeftInWave = 0;
+	CurrentEnemyRoom = nullptr;
 }
 
 // Called every frame
@@ -28,15 +35,25 @@ void AEnemyManager::Tick(float DeltaTime)
 void AEnemyManager::StartWave(int waveIndex)
 {
 	// check if the given wave index is inside the bounds
-	if (waveIndex < 0 || waveIndex >= enemySpawnCounts.Num()) return;
+	if (waveIndex < 0 || waveIndex >= waveCount) return;
+
+	// check if the player is inside an enemy room
+	if (!IsValid(CurrentEnemyRoom)) return;
 
 	// update the current wave index
 	currentWaveIndex = waveIndex;
 
-	int targetSpawnCount = enemySpawnCounts[waveIndex];
+	// reset the enemy index
+	currentEnemyIndex = 0;
+
+	// get the number of enemies to spawn in this wave
+	int targetSpawnCount = CurrentEnemyRoom->GetEnemySpawnCountInWave(currentWaveIndex);
 
 	// set the enemy count
 	enemiesLeftInWave = targetSpawnCount;
+
+	// check if there are any enemies to spawn
+	if (targetSpawnCount <= 0) return;
 
 	if (EnemyPool.Num() > 0)
 	{ // if there are any enemies left in the pool
@@ -60,16 +77,19 @@ void AEnemyManager::StartWave(int waveIndex)
 			// disable collision temporarily (in case of colliding with another actor)
 			PooledEnemy->SetActorEnableCollision(false);
 
-			// select a spawn point index
-			int spawnPointIndex = 0;
-			if (i < CurrentEnemyRoom->GetSpawnPoints().Num()) spawnPointIndex = i;
-
-			// put the enemy at the spawn point's position
-			AActor* SpawnPoint = CurrentEnemyRoom->GetSpawnPoints()[spawnPointIndex];
-			PooledEnemy->TeleportTo(SpawnPoint->GetActorLocation(), SpawnPoint->GetActorRotation());
+			// get the enemy spawn point
+			AActor* SpawnPoint = CurrentEnemyRoom->GetEnemySpawnPoint(currentWaveIndex, currentEnemyIndex);
+			if (IsValid(SpawnPoint))
+			{
+				// teleport the enemy to the spawn point's location
+				PooledEnemy->TeleportTo(SpawnPoint->GetActorLocation(), SpawnPoint->GetActorRotation());
+			}
 
 			// reenable collision
 			PooledEnemy->SetActorEnableCollision(true);
+
+			// set the next enemy index
+			currentEnemyIndex++;
 
 			// increase the spawned enemies count
 			spawnedEnemiesCount++;
@@ -82,6 +102,33 @@ void AEnemyManager::StartNextWave()
 	StartWave(currentWaveIndex + 1);
 }
 
+void AEnemyManager::FinishWave()
+{
+	// update the wave count
+	wavesLeft--;
+
+	if (wavesLeft <= 0)
+	{ // when all the waves finished
+
+		if (IsValid(CurrentEnemyRoom))
+		{
+			CurrentEnemyRoom->OnAllWavesFinished();
+		}
+
+		waveCount = 0;
+		wavesLeft = 0;
+		currentWaveIndex = 0;
+		currentEnemyIndex = 0;
+		enemiesLeftInWave = 0;
+		CurrentEnemyRoom = nullptr;
+	}
+	else
+	{ // if not all waves finished
+
+		StartNextWave();
+	}
+}
+
 void AEnemyManager::SetCurrentEnemyRoom(AEnemyRoomManager* Room)
 {
 	CurrentEnemyRoom = Room;
@@ -90,7 +137,12 @@ void AEnemyManager::SetCurrentEnemyRoom(AEnemyRoomManager* Room)
 	// when entered the room:
 
 	// set the wave count
-	wavesLeft = enemySpawnCounts.Num();
+	waveCount = CurrentEnemyRoom->GetWaveCount();
+	wavesLeft = waveCount;
+
+	// set the enemy index
+	currentEnemyIndex = 0;
+	enemiesLeftInWave = 0;
 
 	// begin the room's first wave
 	StartWave(0);
@@ -103,23 +155,7 @@ void AEnemyManager::OnEnemyDied(class AEnemyCharacter* DeadEnemy)
 
 	if (enemiesLeftInWave <= 0)
 	{ // when all enemies in the wave died
-		// the wave is finished
-
-		// update the wave count
-		wavesLeft--;
-
-		if (wavesLeft <= 0)
-		{ // when all the waves finished
-
-			if (IsValid(CurrentEnemyRoom))
-			{
-				CurrentEnemyRoom->OnAllWavesFinished();
-			}
-		}
-		else
-		{ // if not all waves finished
-
-			StartNextWave();
-		}
+		
+		FinishWave();
 	}
 }

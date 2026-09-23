@@ -80,7 +80,25 @@ void AEnemyRoomManager::OnAllWavesFinished()
 	SetBarriersActive(false);
 }
 
-TArray<AActor*> AEnemyRoomManager::GetSpawnPoints()
+int AEnemyRoomManager::GetWaveCount()
 {
-	return SpawnPoints;
+	return WaveDataArray.Num();
+}
+
+int AEnemyRoomManager::GetEnemySpawnCountInWave(int waveIndex)
+{
+	if (waveIndex < 0 || waveIndex >= GetWaveCount()) return 0;
+
+	return WaveDataArray[waveIndex].EnemySpawnDataArray.Num();
+}
+
+AActor* AEnemyRoomManager::GetEnemySpawnPoint(int waveIndex, int enemyIndex)
+{
+	if (waveIndex < 0 || waveIndex >= GetWaveCount()) return nullptr;
+	if (enemyIndex < 0 || enemyIndex >= GetEnemySpawnCountInWave(waveIndex)) return nullptr;
+
+	int spawnPointIndex = WaveDataArray[waveIndex].EnemySpawnDataArray[enemyIndex].spawnPointIndex;
+	if (spawnPointIndex < 0 || spawnPointIndex >= SpawnPoints.Num()) return nullptr;
+
+	return SpawnPoints[spawnPointIndex];
 }
