@@ -23,6 +23,12 @@ void AEnemyRoomManager::BeginPlay()
 
 	// deactivate the barriers at the start to let the player in
 	SetBarriersActive(false);
+
+	if (IsValid(SpawnPointsParent))
+	{
+		// setup the spawn points araray
+		SpawnPointsParent->GetAttachedActors(SpawnPoints);
+	}
 }
 
 // Called every frame
@@ -72,4 +78,9 @@ void AEnemyRoomManager::OnAllWavesFinished()
 
 	// deactivate the barriers to let the player out
 	SetBarriersActive(false);
+}
+
+TArray<AActor*> AEnemyRoomManager::GetSpawnPoints()
+{
+	return SpawnPoints;
 }

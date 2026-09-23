@@ -20,10 +20,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
 	TArray<int> enemySpawnCounts;
 
-	// A container that stores actors representing enemy spawn points
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
-	TArray<AActor*> SpawnPoints;
-
 	// The number of waves remaining in the current enemy room
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
 	int wavesLeft = 1;

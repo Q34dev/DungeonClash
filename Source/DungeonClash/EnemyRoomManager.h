@@ -21,6 +21,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoomManagement")
 	class AEnemyManager* EnemyManager;
 
+	// The parent object of attached enemy spawn points
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoomManagement")
+	AActor* SpawnPointsParent;
+
+	// The enemy spawn points
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Management")
+	TArray<AActor*> SpawnPoints;
+
 	// An array of gateway barriers that block the room entrances and exits
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoomManagement")
 	TArray<AActor*> GatewayBarriers;
@@ -48,4 +56,7 @@ public:
 
 	// A method to signal when the player finished all the room's enemy waves
 	void OnAllWavesFinished();
+
+	// Returns the enemy spawn points array
+	TArray<AActor*> GetSpawnPoints();
 };

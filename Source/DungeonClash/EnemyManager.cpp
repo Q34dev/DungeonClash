@@ -62,10 +62,10 @@ void AEnemyManager::StartWave(int waveIndex)
 
 			// select a spawn point index
 			int spawnPointIndex = 0;
-			if (i < SpawnPoints.Num()) spawnPointIndex = i;
+			if (i < CurrentEnemyRoom->GetSpawnPoints().Num()) spawnPointIndex = i;
 
 			// put the enemy at the spawn point's position
-			AActor* SpawnPoint = SpawnPoints[spawnPointIndex];
+			AActor* SpawnPoint = CurrentEnemyRoom->GetSpawnPoints()[spawnPointIndex];
 			PooledEnemy->TeleportTo(SpawnPoint->GetActorLocation(), SpawnPoint->GetActorRotation());
 
 			// reenable collision
