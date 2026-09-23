@@ -1,6 +1,7 @@
 #include "EnemyManager.h"
 #include "EnemyCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "EnemyRoomManager.h"
 
 // Sets default values
 AEnemyManager::AEnemyManager()
@@ -16,9 +17,6 @@ void AEnemyManager::BeginPlay()
 
 	// add all enemies in the level to the pool
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyCharacter::StaticClass(), EnemyPool);
-
-	// begin the first wave
-	StartWave(0);
 }
 
 // Called every frame
@@ -36,6 +34,9 @@ void AEnemyManager::StartWave(int waveIndex)
 	currentWaveIndex = waveIndex;
 
 	int targetSpawnCount = enemySpawnCounts[waveIndex];
+
+	// set the enemy count
+	enemiesLeftInWave = targetSpawnCount;
 
 	if (EnemyPool.Num() > 0)
 	{ // if there are any enemies left in the pool
@@ -57,8 +58,8 @@ void AEnemyManager::StartWave(int waveIndex)
 			PooledEnemy->SetActorEnableCollision(false);
 
 			// put the enemy at a random spawn point's position
-			AActor* randSpawnPoint = SpawnPoints[FMath::RandRange(0, SpawnPoints.Num() - 1)];
-			PooledEnemy->TeleportTo(randSpawnPoint->GetActorLocation(), PooledEnemy->GetActorRotation());
+			AActor* RandSpawnPoint = SpawnPoints[FMath::RandRange(0, SpawnPoints.Num() - 1)];
+			PooledEnemy->TeleportTo(RandSpawnPoint->GetActorLocation(), RandSpawnPoint->GetActorRotation());
 
 			// reenable collision
 			PooledEnemy->SetActorEnableCollision(true);
@@ -72,4 +73,21 @@ void AEnemyManager::StartWave(int waveIndex)
 void AEnemyManager::StartNextWave()
 {
 	StartWave(currentWaveIndex + 1);
+}
+
+void AEnemyManager::SetCurrentEnemyRoom(AEnemyRoomManager* Room)
+{
+	CurrentEnemyRoom = Room;
+
+	if (!IsValid(CurrentEnemyRoom)) return;
+	// when entered the room:
+
+	// begin the room's first wave
+	StartWave(0);
+}
+
+void AEnemyManager::OnEnemyDied(class AEnemyCharacter* DeadEnemy)
+{
+	// update the enemy count
+	enemiesLeftInWave--;
 }

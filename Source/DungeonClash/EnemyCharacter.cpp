@@ -5,6 +5,8 @@
 #include "Components/WidgetComponent.h"
 #include "UI/HealthBar.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EnemyManager.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -131,6 +133,18 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 
 void AEnemyCharacter::OnDeath()
 {
+	// get the enemy manager
+	AActor* EnemyManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
+	if (IsValid(EnemyManagerActor))
+	{
+		AEnemyManager* EnemyManager = Cast<AEnemyManager>(EnemyManagerActor);
+		if (IsValid(EnemyManager))
+		{
+			// inform the enemy manager of the death
+			EnemyManager->OnEnemyDied(this);
+		}
+	}
+
 	// destroy the enemy object
 	Destroy();
 }

@@ -32,9 +32,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Management")
 	int currentWaveIndex = 0;
 
+	// The number of enemies remaining in the current wave
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Management")
+	int enemiesLeftInWave = 0;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	// The enemy room that the player is currently in
+	UPROPERTY()
+	class AEnemyRoomManager* CurrentEnemyRoom;
 
 public:	
 	// Called every frame
@@ -43,4 +51,10 @@ public:
 	// Methods for managing enemy waves
 	void StartWave(int waveIndex);
 	void StartNextWave();
+
+	// A method to set the room that the player is in
+	void SetCurrentEnemyRoom(AEnemyRoomManager* Room);
+
+	// A method to react to an enemy's death
+	void OnEnemyDied(class AEnemyCharacter* DeadEnemy);
 };
