@@ -133,6 +133,9 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 
 void AEnemyCharacter::OnDeath()
 {
+	// destroy the enemy object
+	Destroy();
+
 	// get the enemy manager
 	AActor* EnemyManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	if (IsValid(EnemyManagerActor))
@@ -144,7 +147,4 @@ void AEnemyCharacter::OnDeath()
 			EnemyManager->OnEnemyDied(this);
 		}
 	}
-
-	// destroy the enemy object
-	Destroy();
 }

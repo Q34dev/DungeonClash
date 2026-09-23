@@ -45,6 +45,9 @@ void AEnemyManager::StartWave(int waveIndex)
 		for (int i = 0; i < EnemyPool.Num(); i++)
 		{ // iterate through all enemies in the pool
 
+			// check if the enemy still exists
+			if (!IsValid(EnemyPool[i])) continue;
+
 			if (spawnedEnemiesCount == targetSpawnCount)
 			{
 				// stop when reached the required enemy spawn count
@@ -57,9 +60,13 @@ void AEnemyManager::StartWave(int waveIndex)
 			// disable collision temporarily (in case of colliding with another actor)
 			PooledEnemy->SetActorEnableCollision(false);
 
-			// put the enemy at a random spawn point's position
-			AActor* RandSpawnPoint = SpawnPoints[FMath::RandRange(0, SpawnPoints.Num() - 1)];
-			PooledEnemy->TeleportTo(RandSpawnPoint->GetActorLocation(), RandSpawnPoint->GetActorRotation());
+			// select a spawn point index
+			int spawnPointIndex = 0;
+			if (i < SpawnPoints.Num()) spawnPointIndex = i;
+
+			// put the enemy at the spawn point's position
+			AActor* SpawnPoint = SpawnPoints[spawnPointIndex];
+			PooledEnemy->TeleportTo(SpawnPoint->GetActorLocation(), SpawnPoint->GetActorRotation());
 
 			// reenable collision
 			PooledEnemy->SetActorEnableCollision(true);
@@ -82,6 +89,9 @@ void AEnemyManager::SetCurrentEnemyRoom(AEnemyRoomManager* Room)
 	if (!IsValid(CurrentEnemyRoom)) return;
 	// when entered the room:
 
+	// set the wave count
+	wavesLeft = enemySpawnCounts.Num();
+
 	// begin the room's first wave
 	StartWave(0);
 }
@@ -93,10 +103,23 @@ void AEnemyManager::OnEnemyDied(class AEnemyCharacter* DeadEnemy)
 
 	if (enemiesLeftInWave <= 0)
 	{ // when all enemies in the wave died
+		// the wave is finished
 
-		if (IsValid(CurrentEnemyRoom))
-		{
-			CurrentEnemyRoom->OnAllWavesFinished();
+		// update the wave count
+		wavesLeft--;
+
+		if (wavesLeft <= 0)
+		{ // when all the waves finished
+
+			if (IsValid(CurrentEnemyRoom))
+			{
+				CurrentEnemyRoom->OnAllWavesFinished();
+			}
+		}
+		else
+		{ // if not all waves finished
+
+			StartNextWave();
 		}
 	}
 }

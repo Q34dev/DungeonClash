@@ -24,9 +24,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
 	TArray<AActor*> SpawnPoints;
 
-	// The number of waves
+	// The number of waves remaining in the current enemy room
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Management")
-	int waveCount = 1;
+	int wavesLeft = 1;
 
 	// The index of the currently active wave
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Management")
