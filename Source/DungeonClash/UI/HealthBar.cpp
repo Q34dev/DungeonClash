@@ -22,6 +22,15 @@ void UHealthBar::OnDamageReceived(const float newHealth, const float previousHea
 	PlayAnimation(DamageAnim);
 }
 
+void UHealthBar::ResetHealthBar()
+{
+	normalizedHealthVal = 1.f;
+	normalizedPreviousHealthVal = 1.f;
+
+	SetHealthMaterialParameter(HealthParameterName, 1.0f);
+	SetHealthMaterialParameter(PreviousHealthParameterName, 1.0f);
+}
+
 void UHealthBar::LerpCachedHealthValue(const float Value)
 {
 	const UWorld* World = GetWorld();

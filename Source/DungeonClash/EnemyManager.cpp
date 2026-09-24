@@ -49,14 +49,11 @@ void AEnemyManager::SpawnEnemy()
 		// and remove that enemy from the pool
 		SpawnedEnemy = EnemyPool.Pop();
 
-		// disable collision temporarily (in case of colliding with another actor)
-		SpawnedEnemy->SetActorEnableCollision(false);
-
 		// teleport the enemy to the spawn location
-		SpawnedEnemy->TeleportTo(SpawnLocation, SpawnRotation);
+		SpawnedEnemy->TeleportTo(SpawnLocation, SpawnRotation, false, true);
 
-		// reenable collision
-		SpawnedEnemy->SetActorEnableCollision(true);
+		// reactivate the enemy
+		SpawnedEnemy->ActivateEnemy();
 	}
 	else
 	{ // if there are no enemies left in the pool
@@ -159,6 +156,9 @@ void AEnemyManager::OnEnemyDied(class AEnemyCharacter* DeadEnemy)
 {
 	// update the enemy count
 	enemiesLeftInWave--;
+
+	// add the enemy to the enemy pool
+	EnemyPool.Add(DeadEnemy);
 
 	if (enemiesLeftInWave <= 0)
 	{ // when all enemies in the wave died

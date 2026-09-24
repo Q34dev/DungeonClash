@@ -42,4 +42,5 @@ private:
 
 public:
 	void OnDamageReceived(const float newHealth, const float previousHealth, const float maxHealth);
+	void ResetHealthBar();
 };

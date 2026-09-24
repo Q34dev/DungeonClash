@@ -58,11 +58,11 @@ public:
 	UFUNCTION()
 	void OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-protected:
-
 	// Methods to set if the enemy should be visible and interacting with the world
 	void ActivateEnemy();
 	void DeactivateEnemy();
+
+protected:
 
 	UFUNCTION()
 	void OnHealthUpdate(float newHealth, float previousHealth, float maxHealth);

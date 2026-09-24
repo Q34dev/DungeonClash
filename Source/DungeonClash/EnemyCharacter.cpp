@@ -133,6 +133,23 @@ void AEnemyCharacter::ActivateEnemy()
 
 	// enable ticking
 	SetActorTickEnabled(true);
+
+	// enable AI logic
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (IsValid(AIController))
+	{
+		UBrainComponent* BrainComp = AIController->GetBrainComponent();
+		if (IsValid(BrainComp))
+		{
+			BrainComp->StartLogic();
+		}
+	}
+
+	// hide the health bar
+	HealthBarWidgetComp->SetVisibility(false);
+	
+	// reset the health bar
+	if (IsValid(HealthBar)) HealthBar->ResetHealthBar();
 }
 
 void AEnemyCharacter::DeactivateEnemy()
@@ -156,6 +173,12 @@ void AEnemyCharacter::DeactivateEnemy()
 			BrainComp->StopLogic(FString("Enemy deactivated"));
 		}
 	}
+
+	// reset the animation
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
+
+	// hide the health bar
+	HealthBarWidgetComp->SetVisibility(false);
 }
 
 void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, float maxHealth)
@@ -173,6 +196,9 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 
 void AEnemyCharacter::OnDeath()
 {
+	// deactivate the enemy
+	DeactivateEnemy();
+
 	// get the enemy manager
 	AActor* EnemyManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	if (IsValid(EnemyManagerActor))
@@ -184,7 +210,4 @@ void AEnemyCharacter::OnDeath()
 			EnemyManager->OnEnemyDied(this);
 		}
 	}
-
-	// deactivate the enemy
-	DeactivateEnemy();
 }

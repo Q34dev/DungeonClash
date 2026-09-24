@@ -55,6 +55,8 @@ void UHealthComponent::ResetHealth()
 	// set health to the max value
 	currentHealth = maxHealth;
 	SetHealth(currentHealth);
+
+	bIsDead = false;
 }
 
 float UHealthComponent::GetHealth()
