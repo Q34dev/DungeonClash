@@ -36,6 +36,9 @@ public:
 	virtual void AddHealth(float health);
 
 	UFUNCTION(BlueprintCallable)
+	virtual void ResetHealth();
+
+	UFUNCTION(BlueprintCallable)
 	virtual float GetHealth();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

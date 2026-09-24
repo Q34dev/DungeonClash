@@ -12,8 +12,7 @@ void UHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// set health to the max value at the start
-	currentHealth = maxHealth;
-	SetHealth(currentHealth);
+	ResetHealth();
 }
 
 void UHealthComponent::SetHealth(float health)
@@ -49,6 +48,13 @@ void UHealthComponent::AddHealth(float health)
 {
 	// set health to the increased value
 	SetHealth(currentHealth + health);
+}
+
+void UHealthComponent::ResetHealth()
+{
+	// set health to the max value
+	currentHealth = maxHealth;
+	SetHealth(currentHealth);
 }
 
 float UHealthComponent::GetHealth()

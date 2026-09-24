@@ -7,6 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnemyManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "AIController.h"
+#include "BrainComponent.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -118,6 +120,44 @@ void AEnemyCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 	Hit(hitHealthComp);
 }
 
+void AEnemyCharacter::ActivateEnemy()
+{
+	// reset the health value
+	HealthComp->ResetHealth();
+
+	// show the actor
+	SetActorHiddenInGame(false);
+
+	// enable collision
+	SetActorEnableCollision(true);
+
+	// enable ticking
+	SetActorTickEnabled(true);
+}
+
+void AEnemyCharacter::DeactivateEnemy()
+{
+	// hide the actor
+	SetActorHiddenInGame(true);
+	
+	// disable collision
+	SetActorEnableCollision(false);
+
+	// disable ticking
+	SetActorTickEnabled(false);
+
+	// disable AI logic
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (IsValid(AIController))
+	{
+		UBrainComponent* BrainComp = AIController->GetBrainComponent();
+		if (IsValid(BrainComp))
+		{
+			BrainComp->StopLogic(FString("Enemy deactivated"));
+		}
+	}
+}
+
 void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, float maxHealth)
 {
 	if (newHealth < previousHealth)
@@ -133,9 +173,6 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 
 void AEnemyCharacter::OnDeath()
 {
-	// destroy the enemy object
-	Destroy();
-
 	// get the enemy manager
 	AActor* EnemyManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	if (IsValid(EnemyManagerActor))
@@ -147,4 +184,7 @@ void AEnemyCharacter::OnDeath()
 			EnemyManager->OnEnemyDied(this);
 		}
 	}
+
+	// deactivate the enemy
+	DeactivateEnemy();
 }

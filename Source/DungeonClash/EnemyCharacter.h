@@ -60,6 +60,10 @@ public:
 
 protected:
 
+	// Methods to set if the enemy should be visible and interacting with the world
+	void ActivateEnemy();
+	void DeactivateEnemy();
+
 	UFUNCTION()
 	void OnHealthUpdate(float newHealth, float previousHealth, float maxHealth);
 	
