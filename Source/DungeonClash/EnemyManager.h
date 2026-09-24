@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "EnemyManager.generated.h"
 
+class AEnemyCharacter;
+
 UCLASS()
 class DUNGEONCLASH_API AEnemyManager : public AActor
 {
@@ -13,8 +15,11 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyManager();
 
+	UPROPERTY(EditAnywhere, Category = "Management")
+	TSubclassOf<AEnemyCharacter> EnemyBlueprint;
+
 	// A container that stores already spawned enemy actors
-	TArray<AActor*> EnemyPool;
+	TArray<AEnemyCharacter*> EnemyPool;
 
 protected:
 	// Called when the game starts or when spawned
@@ -43,6 +48,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// A method to spawn a new enemy actor or get one from the enemy pool
+	void SpawnEnemy();
+
 	// Methods for managing enemy waves
 	void StartWave(int waveIndex);
 	void StartNextWave();
@@ -52,5 +60,5 @@ public:
 	void SetCurrentEnemyRoom(AEnemyRoomManager* Room);
 
 	// A method to react to an enemy's death
-	void OnEnemyDied(class AEnemyCharacter* DeadEnemy);
+	void OnEnemyDied(AEnemyCharacter* DeadEnemy);
 };

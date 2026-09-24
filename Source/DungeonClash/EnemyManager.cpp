@@ -15,8 +15,7 @@ void AEnemyManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// add all enemies in the level to the pool
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyCharacter::StaticClass(), EnemyPool);
+	EnemyPool.Empty();
 
 	waveCount = 0;
 	wavesLeft = 0;
@@ -30,6 +29,46 @@ void AEnemyManager::BeginPlay()
 void AEnemyManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AEnemyManager::SpawnEnemy()
+{
+	// get the enemy spawn point
+	AActor* SpawnPoint = CurrentEnemyRoom->GetEnemySpawnPoint(currentWaveIndex, currentEnemyIndex);
+	if (!IsValid(SpawnPoint)) return;
+
+	FVector SpawnLocation = SpawnPoint->GetActorLocation();
+	FRotator SpawnRotation = SpawnPoint->GetActorRotation();
+	
+	AEnemyCharacter* SpawnedEnemy = nullptr;
+
+	if (EnemyPool.Num() > 0)
+	{ // if there are any inactive enemies available in the pool
+
+		// get the last enemy from the pool
+		// and remove that enemy from the pool
+		SpawnedEnemy = EnemyPool.Pop();
+
+		// disable collision temporarily (in case of colliding with another actor)
+		SpawnedEnemy->SetActorEnableCollision(false);
+
+		// teleport the enemy to the spawn location
+		SpawnedEnemy->TeleportTo(SpawnLocation, SpawnRotation);
+
+		// reenable collision
+		SpawnedEnemy->SetActorEnableCollision(true);
+	}
+	else
+	{ // if there are no enemies left in the pool
+
+		// spawn a new enemy actor at the spawn location:
+		
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = this;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		
+		GetWorld()->SpawnActor<AEnemyCharacter>(EnemyBlueprint, SpawnLocation, SpawnRotation, SpawnParameters);
+	}
 }
 
 void AEnemyManager::StartWave(int waveIndex)
@@ -55,45 +94,13 @@ void AEnemyManager::StartWave(int waveIndex)
 	// check if there are any enemies to spawn
 	if (targetSpawnCount <= 0) return;
 
-	if (EnemyPool.Num() > 0)
-	{ // if there are any enemies left in the pool
+	for (int i = 0; i < targetSpawnCount; i++)
+	{
+		// spawn the enemy
+		SpawnEnemy();
 
-		int spawnedEnemiesCount = 0;
-		for (int i = 0; i < EnemyPool.Num(); i++)
-		{ // iterate through all enemies in the pool
-
-			// check if the enemy still exists
-			if (!IsValid(EnemyPool[i])) continue;
-
-			if (spawnedEnemiesCount == targetSpawnCount)
-			{
-				// stop when reached the required enemy spawn count
-				break;
-			}
-
-			// get the enemy from the pool
-			AEnemyCharacter* PooledEnemy = Cast<AEnemyCharacter>(EnemyPool[i]);
-
-			// disable collision temporarily (in case of colliding with another actor)
-			PooledEnemy->SetActorEnableCollision(false);
-
-			// get the enemy spawn point
-			AActor* SpawnPoint = CurrentEnemyRoom->GetEnemySpawnPoint(currentWaveIndex, currentEnemyIndex);
-			if (IsValid(SpawnPoint))
-			{
-				// teleport the enemy to the spawn point's location
-				PooledEnemy->TeleportTo(SpawnPoint->GetActorLocation(), SpawnPoint->GetActorRotation());
-			}
-
-			// reenable collision
-			PooledEnemy->SetActorEnableCollision(true);
-
-			// set the next enemy index
-			currentEnemyIndex++;
-
-			// increase the spawned enemies count
-			spawnedEnemiesCount++;
-		}
+		// set the next enemy index
+		currentEnemyIndex++;
 	}
 }
 
