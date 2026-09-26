@@ -13,6 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
 struct FInputActionValue;
+class USoundBase;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -53,7 +54,7 @@ public:
 
 	// A boolean indicating if movement input is ignored
 	UPROPERTY(BlueprintReadOnly)
-	bool movementDisabled;
+	bool bMovementDisabled;
 
 	// A function to enable/disable receiving movement input
 	UFUNCTION()
@@ -80,6 +81,10 @@ protected:
 	/** Attack Input Action */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* AttackAction;
+
+	// Jump sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_Jump;
 
 public:
 

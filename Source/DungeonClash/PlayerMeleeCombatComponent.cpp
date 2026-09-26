@@ -20,12 +20,12 @@ void UPlayerMeleeCombatComponent::BeginPlay()
 	if (GetOwner())
 	{
 		// assign the parent character
-		parentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
+		ParentCharacter = Cast<ADungeonClashCharacter>(GetOwner());
 	}
 
-	if (parentCharacter)
+	if (ParentCharacter)
 	{
-		parentCharacter->SwordCol->OnComponentBeginOverlap.AddDynamic(this, &UPlayerMeleeCombatComponent::OnSwordOverlapBegin);
+		ParentCharacter->SwordCol->OnComponentBeginOverlap.AddDynamic(this, &UPlayerMeleeCombatComponent::OnSwordOverlapBegin);
 	}
 }
 
@@ -38,7 +38,7 @@ void UPlayerMeleeCombatComponent::TickComponent(float DeltaTime, ELevelTick Tick
 void UPlayerMeleeCombatComponent::Attack()
 {
 	// can only attack if is on the ground
-	if (parentCharacter && !parentCharacter->GetCharacterMovement()->IsMovingOnGround()) return;
+	if (ParentCharacter && !ParentCharacter->GetCharacterMovement()->IsMovingOnGround()) return;
 
 	if (!bIsAttacking)
 	{ // if is not attacking
@@ -59,16 +59,16 @@ void UPlayerMeleeCombatComponent::StartAttack()
 	bShouldDealDamage = false;
 	attackComboIndex = 0;
 
-	if (parentCharacter)
+	if (ParentCharacter)
 	{
 		// disable sword collision
-		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
 		// play the attack animation
-		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackCombo);
+		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackCombo);
 
 		// disable movement during the attack
-		parentCharacter->SetIfCanMove(false);
+		ParentCharacter->SetIfCanMove(false);
 	}
 }
 
@@ -79,16 +79,16 @@ void UPlayerMeleeCombatComponent::EndAttack()
 	bShouldDealDamage = false;
 	attackComboIndex = -1;
 
-	if (parentCharacter)
+	if (ParentCharacter)
 	{
 		// reenable movement
-		parentCharacter->SetIfCanMove(true);
+		ParentCharacter->SetIfCanMove(true);
 
 		// disable sword collision
-		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
 		// stop the attack animation
-		parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
 	}
 }
 
@@ -96,10 +96,10 @@ void UPlayerMeleeCombatComponent::OnSlashBegin()
 {
 	bShouldDealDamage = true;
 
-	if (parentCharacter)
+	if (ParentCharacter)
 	{
 		// enable sword collision
-		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 	}
 
 	if (attackComboIndex == 2)
@@ -122,7 +122,7 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 			EndAttack();
 
 			// stop the attack animation
-			if (parentCharacter) parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+			if (ParentCharacter) ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
 		}
 	}
 	else
@@ -134,21 +134,21 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 		if (attackComboIndex == 2)
 		{ // combo finishing slash
 
-			if (parentCharacter)
+			if (ParentCharacter)
 			{
 				// stop the attack animation
-				parentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+				ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
 
 				// play the combo finish animation
-				parentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackFinish, 1.0f, EMontagePlayReturnType::MontageLength, attackFinishMontageStartTime);
+				ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackFinish, 1.0f, EMontagePlayReturnType::MontageLength, attackFinishMontageStartTime);
 			}
 		}
 	}
 
-	if (parentCharacter)
+	if (ParentCharacter)
 	{
 		// disable sword collision
-		parentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 	}
 
 	// stop buffering the attack
@@ -169,10 +169,8 @@ void UPlayerMeleeCombatComponent::Hit(UHealthComponent* hitActor)
 	// deal damage to the hit actor
 	hitActor->TakeDamage(dealtDamage);
 
-	if (finishHit)
-		PlaySound(sb_HitFinish);
-	else
-		PlaySound(sb_HitCombo);
+	PlaySound(sb_HitCombo);
+	if (finishHit) PlaySound(sb_HitFinish);
 }
 
 void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -195,6 +193,7 @@ void UPlayerMeleeCombatComponent::PlaySound(USoundBase* SB)
 {
 	if (!IsValid(SB)) return;
 	if (!IsValid(GetWorld())) return;
+	if (!IsValid(ParentCharacter)) return;
 
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, FVector::Zero());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, ParentCharacter->GetActorLocation());
 }

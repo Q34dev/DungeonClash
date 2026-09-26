@@ -27,7 +27,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY()
-	ADungeonClashCharacter* parentCharacter;
+	ADungeonClashCharacter* ParentCharacter;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* am_AttackCombo;

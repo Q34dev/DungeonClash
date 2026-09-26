@@ -70,7 +70,7 @@ void ADungeonClashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	movementDisabled = false;
+	bMovementDisabled = false;
 
 	// assign the hitbox
 	HealthComp->Hitbox = GetCapsuleComponent();
@@ -170,7 +170,15 @@ void ADungeonClashCharacter::DoLook(float Yaw, float Pitch)
 void ADungeonClashCharacter::DoJump()
 {
 	// can only jump if movement is enabled
-	if (movementDisabled) return;
+	if (bMovementDisabled) return;
+
+	if (GetCharacterMovement()->IsMovingOnGround() && GetCharacterMovement()->IsJumpAllowed())
+	{ // if is on the ground and can jump
+
+		// play the jump sound (with randomized pitch)
+		if (IsValid(sb_Jump) && IsValid(GetWorld()))
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_Jump, GetActorLocation(), 1.f, FMath::RandRange(.8f, 1.2f));
+	}
 
 	// signal the character to jump
 	Jump();
@@ -179,7 +187,7 @@ void ADungeonClashCharacter::DoJump()
 void ADungeonClashCharacter::DoJumpStart()
 {
 	// can only jump if movement is enabled
-	if (movementDisabled) return;
+	if (bMovementDisabled) return;
 
 	// signal the character to jump
 	Jump();
@@ -203,7 +211,7 @@ void ADungeonClashCharacter::SetIfCanMove(bool canMove)
 {
 	if (GetController() == nullptr) return;
 
-	movementDisabled = !canMove;
+	bMovementDisabled = !canMove;
 
 	if (canMove)
 	{
