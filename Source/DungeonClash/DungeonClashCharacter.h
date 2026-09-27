@@ -56,6 +56,12 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bMovementDisabled;
 
+	// Booleans indicating if the player is/was on the ground
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsGrounded = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool bWasGrounded = true;
+
 	// A function to enable/disable receiving movement input
 	UFUNCTION()
 	void SetIfCanMove(bool canMove);
@@ -86,6 +92,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_Jump;
 
+	// Land sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_Land;
+
 public:
 
 	/** Constructor */
@@ -94,6 +104,8 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -134,6 +146,11 @@ public:
 	/** Handles jump pressed inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+
+
+	// Called when the player lands on the ground
+	UFUNCTION()
+	void OnLand();
 
 public:
 

@@ -79,6 +79,22 @@ void ADungeonClashCharacter::BeginPlay()
 	HealthComp->OnDeath.AddDynamic(this, &ADungeonClashCharacter::OnDeath);
 }
 
+void ADungeonClashCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (!IsValid(GetCharacterMovement())) return;
+
+	bIsGrounded = GetCharacterMovement()->IsMovingOnGround();
+
+	if (bIsGrounded && !bWasGrounded)
+	{ // when landed on the ground
+		OnLand();
+	}
+
+	bWasGrounded = bIsGrounded;
+}
+
 void ADungeonClashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
@@ -197,6 +213,13 @@ void ADungeonClashCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void ADungeonClashCharacter::OnLand()
+{
+	// play the land sound (with randomized pitch)
+	if (IsValid(sb_Land) && IsValid(GetWorld()))
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_Land, GetActorLocation(), 1.f, FMath::RandRange(.8f, 1.2f));
 }
 
 FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
