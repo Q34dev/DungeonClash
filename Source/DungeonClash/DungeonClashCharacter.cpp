@@ -70,13 +70,20 @@ void ADungeonClashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	bMovementDisabled = false;
+	bWalkingDisabled = false;
+	bJumpingDisabled = false;
 
 	// assign the hitbox
 	HealthComp->Hitbox = GetCapsuleComponent();
 
 	// assign the OnDeath function
 	HealthComp->OnDeath.AddDynamic(this, &ADungeonClashCharacter::OnDeath);
+
+	// set the default max walk speed
+	if (IsValid(GetCharacterMovement()))
+	{
+		defMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	}
 }
 
 void ADungeonClashCharacter::Tick(float DeltaTime)
@@ -185,8 +192,8 @@ void ADungeonClashCharacter::DoLook(float Yaw, float Pitch)
 
 void ADungeonClashCharacter::DoJump()
 {
-	// can only jump if movement is enabled
-	if (bMovementDisabled) return;
+	// can only jump if enabled
+	if (bJumpingDisabled) return;
 
 	if (GetCharacterMovement()->IsMovingOnGround() && GetCharacterMovement()->IsJumpAllowed())
 	{ // if is on the ground and can jump
@@ -202,8 +209,8 @@ void ADungeonClashCharacter::DoJump()
 
 void ADungeonClashCharacter::DoJumpStart()
 {
-	// can only jump if movement is enabled
-	if (bMovementDisabled) return;
+	// can only jump if enabled
+	if (bJumpingDisabled) return;
 
 	// signal the character to jump
 	Jump();
@@ -230,20 +237,37 @@ FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
 	return HealthComp->OnDamageReceived;
 }
 
-void ADungeonClashCharacter::SetIfCanMove(bool canMove)
+void ADungeonClashCharacter::SetIfCanMove(bool canWalk, bool canJump)
 {
 	if (GetController() == nullptr) return;
 
-	bMovementDisabled = !canMove;
+	bWalkingDisabled = !canWalk;
+	bJumpingDisabled = !canJump;
 
-	if (canMove)
+	if (canWalk)
 	{
-		// enable movement (dont ignore movement input)
+		// enable walking (dont ignore movement input)
 		GetController()->SetIgnoreMoveInput(false);
 	}
 	else
 	{
-		// disable movement (ignore movement input)
+		// disable walking (ignore movement input)
 		GetController()->SetIgnoreMoveInput(true);
+	}
+}
+
+void ADungeonClashCharacter::SetMaxWalkSpeed(float val)
+{
+	if (IsValid(GetCharacterMovement()))
+	{
+		GetCharacterMovement()->MaxWalkSpeed = val;
+	}
+}
+
+void ADungeonClashCharacter::ResetMaxWalkSpeed()
+{
+	if (IsValid(GetCharacterMovement()))
+	{
+		GetCharacterMovement()->MaxWalkSpeed = defMaxWalkSpeed;
 	}
 }

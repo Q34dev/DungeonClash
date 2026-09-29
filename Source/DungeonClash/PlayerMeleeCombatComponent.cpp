@@ -67,8 +67,18 @@ void UPlayerMeleeCombatComponent::StartAttack()
 		// play the attack animation
 		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackCombo);
 
-		// disable movement during the attack
-		ParentCharacter->SetIfCanMove(false);
+		// disable jumping during the attack
+		ParentCharacter->SetIfCanMove(true, false);
+		
+		// change max walk speed
+		ParentCharacter->SetMaxWalkSpeed(attackMaxWalkSpeed);
+
+		if (IsValid(ParentCharacter->GetCharacterMovement()))
+		{
+			ParentCharacter->GetCharacterMovement()->StopMovementImmediately();
+
+			ParentCharacter->GetCharacterMovement()->MaxWalkSpeed = 100.f;
+		}
 	}
 }
 
@@ -81,14 +91,17 @@ void UPlayerMeleeCombatComponent::EndAttack()
 
 	if (ParentCharacter)
 	{
-		// reenable movement
-		ParentCharacter->SetIfCanMove(true);
+		// reenable jumping
+		ParentCharacter->SetIfCanMove(true, true);
 
 		// disable sword collision
 		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
 		// stop the attack animation
 		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+
+		// reset max walk speed
+		ParentCharacter->ResetMaxWalkSpeed();
 	}
 }
 

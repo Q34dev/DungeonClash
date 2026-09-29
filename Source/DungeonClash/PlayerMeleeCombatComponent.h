@@ -43,6 +43,8 @@ public:
 	float attackComboDamage = 1.f;
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float attackFinishDamage = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackMaxWalkSpeed = 1.f;
 
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_AttackCombo;

@@ -52,9 +52,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UHealthComponent* HealthComp;
 
-	// A boolean indicating if movement input is ignored
+	// A boolean indicating if walking input is ignored
 	UPROPERTY(BlueprintReadOnly)
-	bool bMovementDisabled;
+	bool bWalkingDisabled = false;
+	// A boolean indicating if jumping input is ignored
+	UPROPERTY(BlueprintReadOnly)
+	bool bJumpingDisabled = false;
 
 	// Booleans indicating if the player is/was on the ground
 	UPROPERTY(BlueprintReadOnly)
@@ -62,9 +65,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bWasGrounded = true;
 
-	// A function to enable/disable receiving movement input
-	UFUNCTION()
-	void SetIfCanMove(bool canMove);
+	
 
 protected:
 
@@ -121,7 +122,7 @@ protected:
 	/** Called for attack input */
 	void DoAttack();
 
-	// character death function
+	// character death method
 	UFUNCTION()
 	void OnDeath();
 
@@ -161,5 +162,22 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	FOnDamageReceived& GetOnDamageReceivedEvent() const;
+
+	// A method to enable/disable receiving movement input
+	UFUNCTION()
+	void SetIfCanMove(bool canWalk, bool canJump);
+
+	// A method to set the character max walk speed value
+	UFUNCTION()
+	void SetMaxWalkSpeed(float val);
+
+	// A method to reset max walk speed to the default value
+	UFUNCTION()
+	void ResetMaxWalkSpeed();
+
+protected:
+
+	// the default max walk speed value
+	float defMaxWalkSpeed = 100.f;
 };
 
