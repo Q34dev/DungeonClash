@@ -199,8 +199,7 @@ void ADungeonClashCharacter::DoJump()
 	{ // if is on the ground and can jump
 
 		// play the jump sound (with randomized pitch)
-		if (IsValid(sb_Jump) && IsValid(GetWorld()))
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_Jump, GetActorLocation(), 1.f, FMath::RandRange(.8f, 1.2f));
+		PlaySound(sb_Jump, true);
 	}
 
 	// signal the character to jump
@@ -225,8 +224,7 @@ void ADungeonClashCharacter::DoJumpEnd()
 void ADungeonClashCharacter::OnLand()
 {
 	// play the land sound (with randomized pitch)
-	if (IsValid(sb_Land) && IsValid(GetWorld()))
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_Land, GetActorLocation(), 1.f, FMath::RandRange(.8f, 1.2f));
+	PlaySound(sb_Land, true);
 }
 
 FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
@@ -235,6 +233,16 @@ FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
 	if (!IsValid(HealthComp)) return NullReturn;
 
 	return HealthComp->OnDamageReceived;
+}
+
+void ADungeonClashCharacter::PlaySound(USoundBase* SB, bool randomizePitch, float volumeMultiplier)
+{
+	if (!IsValid(SB)) return;
+	if (!IsValid(GetWorld())) return;
+
+	float pitch = randomizePitch ? FMath::RandRange(.7f, 1.3f) : 1.f;
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, GetActorLocation(), volumeMultiplier, pitch);
 }
 
 void ADungeonClashCharacter::SetIfCanMove(bool canWalk, bool canJump)

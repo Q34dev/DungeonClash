@@ -65,8 +65,6 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bWasGrounded = true;
 
-	
-
 protected:
 
 	/** Jump Input Action */
@@ -148,7 +146,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 
-
 	// Called when the player lands on the ground
 	UFUNCTION()
 	void OnLand();
@@ -162,6 +159,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	FOnDamageReceived& GetOnDamageReceivedEvent() const;
+
+	void PlaySound(USoundBase* SB, bool randomizePitch, float volumeMultiplier = 1.f);
 
 	// A method to enable/disable receiving movement input
 	UFUNCTION()
