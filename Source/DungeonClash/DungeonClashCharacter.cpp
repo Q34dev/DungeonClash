@@ -269,6 +269,14 @@ void ADungeonClashCharacter::SetMaxWalkSpeed(float val)
 	if (IsValid(GetCharacterMovement()))
 	{
 		GetCharacterMovement()->MaxWalkSpeed = val;
+
+		if (val <= 0.f)
+		{
+			// disable walking
+			bWalkingDisabled = true;
+			if (IsValid(GetController()))
+				GetController()->SetIgnoreMoveInput(true);
+		}
 	}
 }
 

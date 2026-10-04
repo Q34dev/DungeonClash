@@ -73,12 +73,9 @@ void UPlayerMeleeCombatComponent::StartAttack()
 		// change max walk speed
 		ParentCharacter->SetMaxWalkSpeed(attackMaxWalkSpeed);
 
+		// stop moving
 		if (IsValid(ParentCharacter->GetCharacterMovement()))
-		{
 			ParentCharacter->GetCharacterMovement()->StopMovementImmediately();
-
-			ParentCharacter->GetCharacterMovement()->MaxWalkSpeed = 100.f;
-		}
 	}
 }
 
@@ -91,17 +88,17 @@ void UPlayerMeleeCombatComponent::EndAttack()
 
 	if (ParentCharacter)
 	{
-		// reenable jumping
+		// reenable walking and jumping
 		ParentCharacter->SetIfCanMove(true, true);
+
+		// reset max walk speed
+		ParentCharacter->ResetMaxWalkSpeed();
 
 		// disable sword collision
 		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
 		// stop the attack animation
 		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
-
-		// reset max walk speed
-		ParentCharacter->ResetMaxWalkSpeed();
 	}
 }
 
@@ -113,6 +110,9 @@ void UPlayerMeleeCombatComponent::OnSlashBegin()
 	{
 		// enable sword collision
 		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
+
+		// disable walking
+		ParentCharacter->SetIfCanMove(false, false);
 	}
 
 	if (attackComboIndex == 2)
@@ -134,8 +134,11 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 			// stop the attack
 			EndAttack();
 
-			// stop the attack animation
-			if (ParentCharacter) ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+			if (ParentCharacter)
+			{
+				// stop the attack animation
+				ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
+			}
 		}
 	}
 	else
@@ -144,8 +147,11 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 		// next combo index
 		attackComboIndex++;
 
+		// reenable walking
+		if (ParentCharacter) ParentCharacter->SetIfCanMove(true, false);
+
 		if (attackComboIndex == 2)
-		{ // combo finishing slash
+		{ // if combo finishing slash
 
 			if (ParentCharacter)
 			{
