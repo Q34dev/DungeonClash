@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HealthComponent.h"
+#include "HitCamShake.h"
 
 // Sets default values for this component's properties
 UPlayerMeleeCombatComponent::UPlayerMeleeCombatComponent()
@@ -187,9 +188,13 @@ void UPlayerMeleeCombatComponent::Hit(UHealthComponent* hitActor)
 
 	// deal damage to the hit actor
 	hitActor->TakeDamage(dealtDamage);
-
+	
+	// play the hit sounds
 	PlaySound(sb_HitCombo);
 	if (finishHit) PlaySound(sb_HitFinish);
+
+	// shake the camera
+	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(UHitCamShake::StaticClass());
 }
 
 void UPlayerMeleeCombatComponent::OnSwordOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
