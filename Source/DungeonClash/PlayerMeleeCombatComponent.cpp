@@ -66,7 +66,7 @@ void UPlayerMeleeCombatComponent::StartAttack()
 		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
 		// play the attack animation
-		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackCombo);
+		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackCombo, 1.f, EMontagePlayReturnType::MontageLength, attackComboMontageStartTime);
 
 		// disable jumping during the attack
 		ParentCharacter->SetIfCanMove(true, false);
@@ -160,7 +160,7 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 				ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
 
 				// play the combo finish animation
-				ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackFinish, 1.0f, EMontagePlayReturnType::MontageLength, attackFinishMontageStartTime);
+				ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Play(am_AttackFinish, 1.f, EMontagePlayReturnType::MontageLength, attackFinishMontageStartTime);
 			}
 		}
 	}

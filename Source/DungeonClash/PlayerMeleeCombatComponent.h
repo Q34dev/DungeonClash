@@ -36,8 +36,11 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	float attackMontageBlendOutTime = .2f;
+	
 	UPROPERTY(EditAnywhere, Category = "Animation")
-	float attackFinishMontageStartTime = 0.0f;
+	float attackComboMontageStartTime = 0.f;
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	float attackFinishMontageStartTime = 0.f;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float attackComboDamage = 1.f;
