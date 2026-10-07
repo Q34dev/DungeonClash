@@ -160,7 +160,7 @@ public:
 
 	FOnDamageReceived& GetOnDamageReceivedEvent() const;
 
-	void PlaySound(USoundBase* SB, bool randomizePitch, float volumeMultiplier = 1.f);
+	void PlaySound(USoundBase* SB, float volumeMultiplier = 1.f, float pitchRandomizeRange = .0f);
 
 	// A method to enable/disable receiving movement input
 	UFUNCTION()
