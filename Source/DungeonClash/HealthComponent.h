@@ -8,6 +8,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHealthUpdate, float, newHealth, float, previousHealth, float, maxHealth);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnDamageReceived, float /* newHealth */, float /* previousHealth */, float /* maxHealth */);
 
+class USoundBase;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DUNGEONCLASH_API UHealthComponent : public UActorComponent
 {
@@ -57,4 +59,11 @@ public:
 	FOnHealthUpdate OnHealthUpdate;
 
 	FOnDamageReceived OnDamageReceived;
+
+	// Damage taken sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_DamageTaken;
+
+private:
+	void PlaySound(USoundBase* SB, float volumeMultiplier = 1.f, float pitchRandomizeRange = .0f);
 };

@@ -1,4 +1,5 @@
 #include "HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -36,6 +37,9 @@ void UHealthComponent::TakeDamage(float damage)
 
 	OnDamageReceived.Broadcast(currentHealth, previousHealth, maxHealth);
 
+	// play the damage taken sound
+	PlaySound(sb_DamageTaken, 1.f, .2f);
+
 	if (currentHealth <= 0.f)
 	{
 		// die
@@ -62,4 +66,15 @@ void UHealthComponent::ResetHealth()
 float UHealthComponent::GetHealth()
 {
 	return currentHealth;
+}
+
+void UHealthComponent::PlaySound(USoundBase* SB, float volumeMultiplier, float pitchRandomizeRange)
+{
+	if (!IsValid(SB)) return;
+	if (!IsValid(GetWorld())) return;
+	if (!IsValid(GetOwner())) return;
+
+	float pitch = (pitchRandomizeRange > .0f) ? FMath::RandRange(1.f - pitchRandomizeRange, 1.f + pitchRandomizeRange) : 1.f;
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, GetOwner()->GetActorLocation(), volumeMultiplier, pitch);
 }
