@@ -21,7 +21,8 @@ public class DungeonClash : ModuleRules
 			"UMG",
 			"Slate",
 			"SlateCore",
-            "NavigationSystem"
+            "NavigationSystem",
+            "GameplayCameras"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
