@@ -9,8 +9,11 @@ class DUNGEONCLASH_API UGameEndScreen : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
+private:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
+public:
+	UFUNCTION()
+	void OnGameEnded();
 };

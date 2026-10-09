@@ -13,6 +13,7 @@
 #include "DungeonClash.h"
 #include "PlayerMeleeCombatComponent.h"
 #include "HealthComponent.h"
+#include "GameManager.h"
 
 ADungeonClashCharacter::ADungeonClashCharacter()
 {
@@ -154,7 +155,16 @@ void ADungeonClashCharacter::DoAttack()
 
 void ADungeonClashCharacter::OnDeath()
 {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Player died!");
+	AActor* GameManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AGameManager::StaticClass());
+	if (IsValid(GameManagerActor))
+	{
+		AGameManager* GameManager = Cast<AGameManager>(GameManagerActor);
+		if (IsValid(GameManager))
+		{
+			// inform the game manager that the player has died
+			GameManager->PlayerDied();
+		}
+	}
 
 	// destroy the character
 	Destroy();
