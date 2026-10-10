@@ -30,6 +30,12 @@ public:
 	// Called when the player died
 	void PlayerDied();
 
+	// Called when a restart game button on a UI screen has been pressed
+	void RestartButtonPressed();
+
 	UPROPERTY(BlueprintAssignable)
 	FOnGameEnded OnGameEnded;
+
+	UPROPERTY(EditAnywhere, Category = "Game Management")
+	FName GameLevelName;
 };

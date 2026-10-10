@@ -1,30 +1,52 @@
 #include "UI/GameEndScreen.h"
+#include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CanvasPanel.h"
-#include "GameManager.h"
+#include "Components/Button.h"
 
 void UGameEndScreen::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// get the game manager
 	AActor* GameManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AGameManager::StaticClass());
-	if (!IsValid(GameManagerActor)) return;
+	if (IsValid(GameManagerActor))
+	{
+		GameManager = Cast<AGameManager>(GameManagerActor);
+	}
 
-	AGameManager* GameManager = Cast<AGameManager>(GameManagerActor);
-	if (!IsValid(GameManager)) return;
+	if (IsValid(GameManager))
+	{
+		// bind the game ended method
+		GameManager->OnGameEnded.AddDynamic(this, &UGameEndScreen::OnGameEnded);
+	}
 
-	GameManager->OnGameEnded.AddDynamic(this, &UGameEndScreen::OnGameEnded);
+	// bind the restart button method
+	if (IsValid(ButtonRestartWon)) ButtonRestartWon->OnPressed.AddDynamic(this, &UGameEndScreen::OnRestartButtonPressed);
+	if (IsValid(ButtonRestartLost)) ButtonRestartLost->OnPressed.AddDynamic(this, &UGameEndScreen::OnRestartButtonPressed);
 }
 
 void UGameEndScreen::NativeDestruct()
 {
-	AActor* GameManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AGameManager::StaticClass());
-	if (!IsValid(GameManagerActor)) return;
+	if (!IsValid(GameManager))
+	{
+		// get the game manager
+		AActor* GameManagerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AGameManager::StaticClass());
+		if (IsValid(GameManagerActor))
+		{
+			GameManager = Cast<AGameManager>(GameManagerActor);
+		}
+	}
 
-	AGameManager* GameManager = Cast<AGameManager>(GameManagerActor);
-	if (!IsValid(GameManager)) return;
+	if (IsValid(GameManager))
+	{
+		// unbind the game ended method
+		GameManager->OnGameEnded.RemoveDynamic(this, &UGameEndScreen::OnGameEnded);
+	}
 
-	GameManager->OnGameEnded.RemoveDynamic(this, &UGameEndScreen::OnGameEnded);
+	// unbind the restart button method
+	if (IsValid(ButtonRestartWon)) ButtonRestartWon->OnPressed.RemoveDynamic(this, &UGameEndScreen::OnRestartButtonPressed);
+	if (IsValid(ButtonRestartLost)) ButtonRestartLost->OnPressed.RemoveDynamic(this, &UGameEndScreen::OnRestartButtonPressed);
 
 	Super::NativeDestruct();
 }
@@ -56,4 +78,13 @@ void UGameEndScreen::OnGameEnded(bool playerWon)
 
 	// show the game end screen
 	SetVisibility(ESlateVisibility::Visible);
+}
+
+void UGameEndScreen::OnRestartButtonPressed()
+{
+	if (IsValid(GameManager))
+	{
+		// inform the game manager that the restart game button has been pressed
+		GameManager->RestartButtonPressed();
+	}
 }

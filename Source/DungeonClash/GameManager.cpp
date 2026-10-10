@@ -43,3 +43,12 @@ void AGameManager::PlayerDied()
 	// the game has ended (player lost)
 	GameEnded(false);
 }
+
+void AGameManager::RestartButtonPressed()
+{
+	if (IsValid(GetWorld()))
+	{
+		// restart the game (by opening the level again)
+		UGameplayStatics::OpenLevel(GetWorld(), GameLevelName);
+	}
+}
