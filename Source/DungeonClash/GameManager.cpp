@@ -24,6 +24,18 @@ void AGameManager::Tick(float DeltaTime)
 void AGameManager::GameEnded(bool playerWon)
 {
 	OnGameEnded.Broadcast(playerWon);
+
+	if (IsValid(GetWorld()))
+	{
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (IsValid(PlayerController))
+		{
+			// enable the mouse cursor
+			PlayerController->bShowMouseCursor = true;
+			PlayerController->bEnableClickEvents = true;
+			PlayerController->bEnableMouseOverEvents = true;
+		}
+	}
 }
 
 void AGameManager::PlayerDied()
