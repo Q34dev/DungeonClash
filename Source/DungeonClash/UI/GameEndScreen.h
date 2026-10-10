@@ -4,6 +4,8 @@
 #include "Blueprint/UserWidget.h"
 #include "GameEndScreen.generated.h"
 
+class UCanvasPanel;
+
 UCLASS()
 class DUNGEONCLASH_API UGameEndScreen : public UUserWidget
 {
@@ -15,5 +17,10 @@ private:
 
 public:
 	UFUNCTION()
-	void OnGameEnded();
+	void OnGameEnded(bool playerWon);
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), Category = "UI")
+	TObjectPtr <UCanvasPanel> PlayerWonPanel = nullptr;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), Category = "UI")
+	TObjectPtr <UCanvasPanel> PlayerLostPanel = nullptr;
 };

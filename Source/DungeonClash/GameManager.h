@@ -4,7 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "GameManager.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameEnded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameEnded, bool, playerWon);
 
 UCLASS()
 class DUNGEONCLASH_API AGameManager : public AActor

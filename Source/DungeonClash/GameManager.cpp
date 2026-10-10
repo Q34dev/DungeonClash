@@ -23,7 +23,7 @@ void AGameManager::Tick(float DeltaTime)
 
 void AGameManager::GameEnded(bool playerWon)
 {
-	OnGameEnded.Broadcast();
+	OnGameEnded.Broadcast(playerWon);
 }
 
 void AGameManager::PlayerDied()
