@@ -58,6 +58,12 @@ public:
 	// A boolean indicating if jumping input is ignored
 	UPROPERTY(BlueprintReadOnly)
 	bool bJumpingDisabled = false;
+	// A boolean indicating if camera looking input is ignored
+	UPROPERTY(BlueprintReadOnly)
+	bool bLookingDisabled = false;
+	// A boolean indicating if attacking input is ignored
+	UPROPERTY(BlueprintReadOnly)
+	bool bAttackingDisabled = false;
 
 	// Booleans indicating if the player is/was on the ground
 	UPROPERTY(BlueprintReadOnly)
@@ -165,6 +171,14 @@ public:
 	// A method to enable/disable receiving movement input
 	UFUNCTION()
 	void SetIfCanMove(bool canWalk, bool canJump);
+
+	// A method to enable/disable receiving camera looking input
+	UFUNCTION()
+	void SetIfCanLook(bool canLook);
+	
+	// A method to enable/disable receiving attack input
+	UFUNCTION()
+	void SetIfCanAttack(bool canAttack);
 
 	// A method to set the character max walk speed value
 	UFUNCTION()

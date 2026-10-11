@@ -73,6 +73,8 @@ void ADungeonClashCharacter::BeginPlay()
 
 	bWalkingDisabled = false;
 	bJumpingDisabled = false;
+	bLookingDisabled = false;
+	bAttackingDisabled = false;
 
 	// assign the hitbox
 	HealthComp->Hitbox = GetCapsuleComponent();
@@ -148,7 +150,10 @@ void ADungeonClashCharacter::Look(const FInputActionValue& Value)
 
 void ADungeonClashCharacter::DoAttack()
 {
-	if (!CombatComp) return;
+	// can only attack if attacking is enabled
+	if (bAttackingDisabled) return;
+
+	if (!IsValid(CombatComp)) return;
 
 	CombatComp->Attack();
 }
@@ -192,6 +197,9 @@ void ADungeonClashCharacter::DoMove(float Right, float Forward)
 
 void ADungeonClashCharacter::DoLook(float Yaw, float Pitch)
 {
+	// can only look around with the camera if enabled
+	if (bLookingDisabled) return;
+
 	if (GetController() != nullptr)
 	{
 		// add yaw and pitch input to controller
@@ -272,6 +280,16 @@ void ADungeonClashCharacter::SetIfCanMove(bool canWalk, bool canJump)
 		// disable walking (ignore movement input)
 		GetController()->SetIgnoreMoveInput(true);
 	}
+}
+
+void ADungeonClashCharacter::SetIfCanLook(bool canLook)
+{
+	bLookingDisabled = !canLook;
+}
+
+void ADungeonClashCharacter::SetIfCanAttack(bool canAttack)
+{
+	bAttackingDisabled = !canAttack;
 }
 
 void ADungeonClashCharacter::SetMaxWalkSpeed(float val)

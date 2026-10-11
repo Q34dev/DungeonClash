@@ -15,6 +15,8 @@ AGameManager::AGameManager()
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bGameEnded = false;
 }
 
 // Called every frame
@@ -25,6 +27,10 @@ void AGameManager::Tick(float DeltaTime)
 
 void AGameManager::GameEnded(bool playerWon)
 {
+	// check if the game has not ended already
+	if (bGameEnded) return;
+	bGameEnded = true;
+
 	OnGameEnded.Broadcast(playerWon);
 
 	if (IsValid(PC = GetPlayerController()))
@@ -44,6 +50,15 @@ void AGameManager::PlayerDied()
 
 void AGameManager::PlayerTriggeredWinStateBox()
 {
+	if (IsValid(DCC = GetPlayerCharacter()))
+	{
+		// disable player input
+		DCC->GetCharacterMovement()->StopMovementImmediately();
+		DCC->SetIfCanMove(false, false);
+		DCC->SetIfCanLook(false);
+		DCC->SetIfCanAttack(false);
+	}
+
 	// the game has ended (player won)
 	GameEnded(true);
 }

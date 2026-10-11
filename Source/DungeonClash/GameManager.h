@@ -55,4 +55,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Game Management")
 	FName GameLevelName;
+
+	// has the game already ended
+	bool bGameEnded = false;
 };
