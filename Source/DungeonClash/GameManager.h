@@ -6,6 +6,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameEnded, bool, playerWon);
 
+class ADungeonClashCharacter;
+
 UCLASS()
 class DUNGEONCLASH_API AGameManager : public AActor
 {
@@ -30,8 +32,23 @@ public:
 	// Called when the player died
 	void PlayerDied();
 
+	// Called when the player triggered the win state trigger box
+	void PlayerTriggeredWinStateBox();
+
 	// Called when a restart game button on a UI screen has been pressed
 	void RestartButtonPressed();
+
+	// The Player Controller
+	UPROPERTY()
+	APlayerController* PC = nullptr;
+	UFUNCTION()
+	APlayerController* GetPlayerController();
+
+	// The Player (Dungeon Clash) Character
+	UPROPERTY()
+	ADungeonClashCharacter* DCC = nullptr;
+	UFUNCTION()
+	ADungeonClashCharacter* GetPlayerCharacter();
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGameEnded OnGameEnded;

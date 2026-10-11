@@ -1,6 +1,8 @@
 #include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameModeBase.h"
+#include "DungeonClashCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AGameManager::AGameManager()
@@ -25,16 +27,12 @@ void AGameManager::GameEnded(bool playerWon)
 {
 	OnGameEnded.Broadcast(playerWon);
 
-	if (IsValid(GetWorld()))
+	if (IsValid(PC = GetPlayerController()))
 	{
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (IsValid(PlayerController))
-		{
-			// enable the mouse cursor
-			PlayerController->bShowMouseCursor = true;
-			PlayerController->bEnableClickEvents = true;
-			PlayerController->bEnableMouseOverEvents = true;
-		}
+		// enable the mouse cursor
+		PC->bShowMouseCursor = true;
+		PC->bEnableClickEvents = true;
+		PC->bEnableMouseOverEvents = true;
 	}
 }
 
@@ -44,6 +42,12 @@ void AGameManager::PlayerDied()
 	GameEnded(false);
 }
 
+void AGameManager::PlayerTriggeredWinStateBox()
+{
+	// the game has ended (player won)
+	GameEnded(true);
+}
+
 void AGameManager::RestartButtonPressed()
 {
 	if (IsValid(GetWorld()))
@@ -51,4 +55,29 @@ void AGameManager::RestartButtonPressed()
 		// restart the game (by opening the level again)
 		UGameplayStatics::OpenLevel(GetWorld(), GameLevelName);
 	}
+}
+
+APlayerController* AGameManager::GetPlayerController()
+{
+	if (IsValid(PC)) return PC;
+	// if player controller not assigned yet:
+
+	PC = UGameplayStatics::GetPlayerController(this, 0);
+	if (!IsValid(PC)) return nullptr;
+	
+	return PC;
+}
+
+ADungeonClashCharacter* AGameManager::GetPlayerCharacter()
+{
+	if (IsValid(DCC)) return DCC;
+	// if player character not assigned yet:
+
+	ACharacter* PCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
+	if (!IsValid(PCharacter)) return nullptr;
+
+	DCC = Cast<ADungeonClashCharacter>(PCharacter);
+	if (!IsValid(DCC)) return nullptr;
+	
+	return DCC;
 }
