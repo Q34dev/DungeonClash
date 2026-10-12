@@ -63,6 +63,12 @@ ADungeonClashCharacter::ADungeonClashCharacter()
 	// Create the health component
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
+	// Create the dodge roll timeline component
+	DodgeRollTimelineComp = CreateDefaultSubobject<UTimelineComponent>(TEXT("DodgeRollTimelineComponent"));
+
+	// Create the dodge roll timeline curve
+	DodgeRollTimelineCurve = CreateDefaultSubobject<UCurveFloat>(TEXT("DodgeRollTimelineCurve"));
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -86,6 +92,20 @@ void ADungeonClashCharacter::BeginPlay()
 	if (IsValid(GetCharacterMovement()))
 	{
 		defMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	}
+	
+	if (IsValid(DodgeRollTimelineComp) && IsValid(DodgeRollTimelineCurve))
+	{
+		// bind the dodge roll timeline events:
+
+		OnDodgeRollTimelineUpdate.BindUFunction(this, FName{ TEXT("DodgeRollTimelineUpdate") });
+		DodgeRollTimelineComp->AddInterpFloat(DodgeRollTimelineCurve, OnDodgeRollTimelineUpdate, NAME_None);
+		
+		OnDodgeRollTimelineFinished.BindUFunction(this, FName("DodgeRollTimelineFinished"));
+		DodgeRollTimelineComp->SetTimelineFinishedFunc(OnDodgeRollTimelineFinished);
+		
+		DodgeRollTimelineComp->SetPlayRate(dodgeRollPlayRate);
+		DodgeRollTimelineComp->SetTimelineLengthMode(TL_LastKeyFrame);
 	}
 }
 
@@ -156,6 +176,9 @@ void ADungeonClashCharacter::DoAttack()
 	// can only attack if attacking is enabled
 	if (bAttackingDisabled) return;
 
+	// can only attack if is not currently dodge rolling
+	if (bIsDodgeRolling) return;
+
 	if (!IsValid(CombatComp)) return;
 
 	CombatComp->Attack();
@@ -180,6 +203,9 @@ void ADungeonClashCharacter::OnDeath()
 
 void ADungeonClashCharacter::DoMove(float Right, float Forward)
 {
+	// can only move if is not currently dodge rolling
+	if (bIsDodgeRolling) return;
+
 	if (GetController() != nullptr)
 	{
 		// find out which way is forward
@@ -215,6 +241,9 @@ void ADungeonClashCharacter::DoJump()
 {
 	// can only jump if enabled
 	if (bJumpingDisabled) return;
+
+	// can only jump if is not currently dodge rolling
+	if (bIsDodgeRolling) return;
 
 	if (GetCharacterMovement()->IsMovingOnGround() && GetCharacterMovement()->IsJumpAllowed())
 	{ // if is on the ground and can jump
@@ -334,14 +363,42 @@ void ADungeonClashCharacter::DoDodgeRoll()
 	bIsDodgeRolling = true;
 	
 	// play the animation montage
-	AnimInstance->Montage_Play(am_DodgeRoll);
+	AnimInstance->Montage_Play(am_DodgeRoll, dodgeRollPlayRate, EMontagePlayReturnType::MontageLength, dodgeRollMontageStartTime);
 
-	// launch the character forward
-	LaunchCharacter(GetActorForwardVector() * dodgeRollForce, true, true);
+	// play the timeline
+	if (IsValid(DodgeRollTimelineComp))
+	{
+		DodgeRollTimelineComp->SetTimelineLength(dodgeRollForce);
+		DodgeRollTimelineComp->PlayFromStart();
+	}
 }
 
 void ADungeonClashCharacter::OnDodgeRollEnd()
 {
+}
+
+void ADungeonClashCharacter::DodgeRollTimelineUpdate(float curveVal)
+{
+	if (!IsValid(DodgeRollTimelineComp) || !IsValid(DodgeRollTimelineCurve)) return;
+
+	if (DodgeRollTimelineComp->IsPlaying())
+	{ // if the timeline is playing
+
+		if (IsValid(GetCharacterMovement()))
+		{
+			// move forward with the force from the timeline curve
+			FVector vec = curveVal * dodgeRollForce * GetActorForwardVector();
+			GetCharacterMovement()->AddInputVector(vec);
+		}
+	}
+}
+
+void ADungeonClashCharacter::DodgeRollTimelineFinished()
+{
 	// stop dodge rolling
 	bIsDodgeRolling = false;
+
+	// stop moving
+	if (IsValid(GetCharacterMovement()))
+		GetCharacterMovement()->StopMovementImmediately();
 }

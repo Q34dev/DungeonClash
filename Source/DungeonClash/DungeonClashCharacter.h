@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "PlayerMeleeCombatComponent.h"
 #include "HealthComponent.h"
+#include "Components/TimelineComponent.h"
 #include "DungeonClashCharacter.generated.h"
 
 class USpringArmComponent;
@@ -56,9 +57,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
 	UAnimMontage* am_DodgeRoll;
 
-	// Dodge roll launch force
+	// Dodge roll animation play rate scale
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
+	float dodgeRollPlayRate = 1.f;
+
+	// Dodge roll animation montage start time
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
+	float dodgeRollMontageStartTime = 0.f;
+
+	// Dodge roll move force
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
 	float dodgeRollForce = 1.f;
+
+	// Dodge roll timeline component
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
+	UTimelineComponent* DodgeRollTimelineComp;
+
+	// Dodge roll timeline curve
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
+	UCurveFloat* DodgeRollTimelineCurve;
 
 	// A boolean indicating if walking input is ignored
 	UPROPERTY(BlueprintReadOnly)
@@ -172,9 +189,15 @@ public:
 	void OnLand();
 
 	// Handling the dodge roll
+	bool bIsDodgeRolling;
 	void DoDodgeRoll();
 	void OnDodgeRollEnd(); // Anim Notify
-	bool bIsDodgeRolling;
+	FOnTimelineFloat OnDodgeRollTimelineUpdate{};
+	FOnTimelineEvent OnDodgeRollTimelineFinished;
+	UFUNCTION()
+	void DodgeRollTimelineUpdate(float curveVal);
+	UFUNCTION()
+	void DodgeRollTimelineFinished();
 
 public:
 
