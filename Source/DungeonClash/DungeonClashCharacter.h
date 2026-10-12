@@ -52,6 +52,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UHealthComponent* HealthComp;
 
+	// Dodge roll animation montage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
+	UAnimMontage* am_DodgeRoll;
+
+	// Dodge roll launch force
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
+	float dodgeRollForce = 1.f;
+
 	// A boolean indicating if walking input is ignored
 	UPROPERTY(BlueprintReadOnly)
 	bool bWalkingDisabled = false;
@@ -64,6 +72,9 @@ public:
 	// A boolean indicating if attacking input is ignored
 	UPROPERTY(BlueprintReadOnly)
 	bool bAttackingDisabled = false;
+	// A boolean indicating if dodge rolling input is ignored
+	UPROPERTY(BlueprintReadOnly)
+	bool bDodgeRollingDisabled = false;
 
 	// Booleans indicating if the player is/was on the ground
 	UPROPERTY(BlueprintReadOnly)
@@ -92,6 +103,10 @@ protected:
 	/** Attack Input Action */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* AttackAction;
+
+	/** Dodge roll Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* DodgeRollAction;
 
 	// Jump sound
 	UPROPERTY(EditAnywhere, Category = "Audio")
@@ -155,6 +170,11 @@ public:
 	// Called when the player lands on the ground
 	UFUNCTION()
 	void OnLand();
+
+	// Handling the dodge roll
+	void DoDodgeRoll();
+	void OnDodgeRollEnd(); // Anim Notify
+	bool bIsDodgeRolling;
 
 public:
 

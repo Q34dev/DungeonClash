@@ -123,6 +123,9 @@ void ADungeonClashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	
 		// Attacking
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ADungeonClashCharacter::DoAttack);
+
+		// Dodge rolling
+		EnhancedInputComponent->BindAction(DodgeRollAction, ETriggerEvent::Triggered, this, &ADungeonClashCharacter::DoDodgeRoll);
 	}
 	else
 	{
@@ -314,4 +317,31 @@ void ADungeonClashCharacter::ResetMaxWalkSpeed()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = defMaxWalkSpeed;
 	}
+}
+
+void ADungeonClashCharacter::DoDodgeRoll()
+{
+	// can only dodge roll if enabled and is not currently dodge rolling
+	if (bDodgeRollingDisabled || bIsDodgeRolling) return;
+
+	// can only dodge roll if is on the ground
+	if (!GetCharacterMovement()->IsMovingOnGround()) return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!IsValid(AnimInstance)) return;
+
+	// start dodge rolling
+	bIsDodgeRolling = true;
+	
+	// play the animation montage
+	AnimInstance->Montage_Play(am_DodgeRoll);
+
+	// launch the character forward
+	LaunchCharacter(GetActorForwardVector() * dodgeRollForce, true, true);
+}
+
+void ADungeonClashCharacter::OnDodgeRollEnd()
+{
+	// stop dodge rolling
+	bIsDodgeRolling = false;
 }
