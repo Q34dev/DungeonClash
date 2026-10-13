@@ -54,7 +54,7 @@ void AGameManager::PlayerTriggeredWinStateBox()
 	{
 		// disable player input
 		DCC->GetCharacterMovement()->StopMovementImmediately();
-		DCC->SetIfCanMove(false, false);
+		DCC->SetIfCanMove(false, false, false);
 		DCC->SetIfCanLook(false);
 		DCC->SetIfCanAttack(false);
 	}

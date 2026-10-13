@@ -213,7 +213,7 @@ public:
 
 	// A method to enable/disable receiving movement input
 	UFUNCTION()
-	void SetIfCanMove(bool canWalk, bool canJump);
+	void SetIfCanMove(bool canWalk, bool canJump, bool canDodgeRoll);
 
 	// A method to enable/disable receiving camera looking input
 	UFUNCTION()

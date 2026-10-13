@@ -295,12 +295,13 @@ void ADungeonClashCharacter::PlaySound(USoundBase* SB, float volumeMultiplier, f
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, GetActorLocation(), volumeMultiplier, pitch);
 }
 
-void ADungeonClashCharacter::SetIfCanMove(bool canWalk, bool canJump)
+void ADungeonClashCharacter::SetIfCanMove(bool canWalk, bool canJump, bool canDodgeRoll)
 {
 	if (GetController() == nullptr) return;
 
 	bWalkingDisabled = !canWalk;
 	bJumpingDisabled = !canJump;
+	bDodgeRollingDisabled = !canDodgeRoll;
 
 	if (canWalk)
 	{
@@ -359,6 +360,12 @@ void ADungeonClashCharacter::DoDodgeRoll()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (!IsValid(AnimInstance)) return;
 
+	if (IsValid(CombatComp) && CombatComp->bIsAttacking)
+	{ // if is attacking
+		// interrupt the attack
+		CombatComp->EndAttack();
+	}
+
 	// start dodge rolling
 	bIsDodgeRolling = true;
 	
@@ -397,8 +404,4 @@ void ADungeonClashCharacter::DodgeRollTimelineFinished()
 {
 	// stop dodge rolling
 	bIsDodgeRolling = false;
-
-	// stop moving
-	if (IsValid(GetCharacterMovement()))
-		GetCharacterMovement()->StopMovementImmediately();
 }
