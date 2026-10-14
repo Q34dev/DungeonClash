@@ -368,6 +368,9 @@ void ADungeonClashCharacter::DoDodgeRoll()
 
 	// start dodge rolling
 	bIsDodgeRolling = true;
+
+	// make the player invincible during the dodge roll
+	if (IsValid(HealthComp)) HealthComp->SetIfInvincible(true);
 	
 	// play the animation montage
 	AnimInstance->Montage_Play(am_DodgeRoll, dodgeRollPlayRate, EMontagePlayReturnType::MontageLength, dodgeRollMontageStartTime);
@@ -404,4 +407,7 @@ void ADungeonClashCharacter::DodgeRollTimelineFinished()
 {
 	// stop dodge rolling
 	bIsDodgeRolling = false;
+
+	// disable invincibility
+	if (IsValid(HealthComp)) HealthComp->SetIfInvincible(false);
 }

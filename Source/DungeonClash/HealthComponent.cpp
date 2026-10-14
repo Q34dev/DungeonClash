@@ -28,7 +28,8 @@ void UHealthComponent::SetHealth(float health)
 
 void UHealthComponent::TakeDamage(float damage)
 {
-	if (bIsDead) return;
+	// can't take damage if is already dead or is currently invincible
+	if (bIsDead || bIsInvincible) return;
 
 	float previousHealth = currentHealth;
 
@@ -66,6 +67,11 @@ void UHealthComponent::ResetHealth()
 float UHealthComponent::GetHealth()
 {
 	return currentHealth;
+}
+
+void UHealthComponent::SetIfInvincible(bool bSetInvincible)
+{
+	bIsInvincible = bSetInvincible;
 }
 
 void UHealthComponent::PlaySound(USoundBase* SB, float volumeMultiplier, float pitchRandomizeRange)

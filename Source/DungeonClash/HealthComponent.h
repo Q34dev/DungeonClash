@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual float GetHealth();
 
+	UFUNCTION()
+	void SetIfInvincible(bool bSetInvincible);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float maxHealth;
 
@@ -51,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsDead;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsInvincible = false;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDeath OnDeath;
