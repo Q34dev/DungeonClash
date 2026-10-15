@@ -372,6 +372,13 @@ void ADungeonClashCharacter::DoDodgeRoll()
 	// make the player invincible during the dodge roll
 	if (IsValid(HealthComp)) HealthComp->SetIfInvincible(true);
 	
+	if (!GetLastMovementInputVector().IsZero())
+	{
+		// rotate immediately towards the input direction
+		FRotator fRot = GetLastMovementInputVector().Rotation();
+		SetActorRotation(fRot, ETeleportType::TeleportPhysics);
+	}
+
 	// play the animation montage
 	AnimInstance->Montage_Play(am_DodgeRoll, dodgeRollPlayRate, EMontagePlayReturnType::MontageLength, dodgeRollMontageStartTime);
 

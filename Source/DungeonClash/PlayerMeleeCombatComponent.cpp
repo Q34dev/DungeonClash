@@ -89,7 +89,7 @@ void UPlayerMeleeCombatComponent::EndAttack()
 
 	if (ParentCharacter)
 	{
-		// reenable walking, jumping and dodge rolling
+		// reenable walking and jumping
 		ParentCharacter->SetIfCanMove(true, true, true);
 
 		// reset max walk speed
@@ -112,8 +112,8 @@ void UPlayerMeleeCombatComponent::OnSlashBegin()
 		// enable sword collision
 		ParentCharacter->SwordCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
-		// disable walking and dodge rolling
-		ParentCharacter->SetIfCanMove(false, false, false);
+		// disable walking
+		ParentCharacter->SetIfCanMove(false, false, true);
 	}
 
 	if (attackComboIndex == 2)
@@ -148,7 +148,7 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 		// next combo index
 		attackComboIndex++;
 
-		// reenable walking and dodge rolling
+		// reenable walking
 		if (ParentCharacter) ParentCharacter->SetIfCanMove(true, false, true);
 
 		if (attackComboIndex == 2)
