@@ -189,7 +189,7 @@ public:
 	void OnLand();
 
 	// Handling the dodge roll
-	bool bIsDodgeRolling;
+	bool bIsDodgeRolling = false;
 	void DoDodgeRoll();
 	void OnDodgeRollEnd(); // Anim Notify
 	FOnTimelineFloat OnDodgeRollTimelineUpdate{};
@@ -210,6 +210,8 @@ public:
 	FOnDamageReceived& GetOnDamageReceivedEvent() const;
 
 	void PlaySound(USoundBase* SB, float volumeMultiplier = 1.f, float pitchRandomizeRange = .0f);
+
+	void UpdateMovementInput();
 
 	// A method to enable/disable receiving movement input
 	UFUNCTION()
@@ -233,7 +235,15 @@ public:
 
 protected:
 
+	// movement input vector
+	FVector2D MovementVector;
+	FVector MovementInputDir;
+
 	// the default max walk speed value
 	float defMaxWalkSpeed = 100.f;
-};
 
+	// input buffers
+	bool bIsBufferingJump = false;
+	bool bIsBufferingDodgeRoll = false;
+	bool bCanBufferDodgeRoll = false;
+};

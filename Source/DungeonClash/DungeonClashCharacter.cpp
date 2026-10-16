@@ -156,7 +156,7 @@ void ADungeonClashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 void ADungeonClashCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	MovementVector = Value.Get<FVector2D>();
 
 	// route the input
 	DoMove(MovementVector.X, MovementVector.Y);
@@ -243,7 +243,13 @@ void ADungeonClashCharacter::DoJump()
 	if (bJumpingDisabled) return;
 
 	// can only jump if is not currently dodge rolling
-	if (bIsDodgeRolling) return;
+	if (bIsDodgeRolling)
+	{
+		// set to buffer the input to jump later
+		bIsBufferingJump = true;
+		bIsBufferingDodgeRoll = false;
+		return;
+	}
 
 	if (GetCharacterMovement()->IsMovingOnGround() && GetCharacterMovement()->IsJumpAllowed())
 	{ // if is on the ground and can jump
@@ -275,6 +281,14 @@ void ADungeonClashCharacter::OnLand()
 {
 	// play the land sound (with randomized pitch)
 	PlaySound(sb_Land, .9f, .2f);
+
+	if (bIsBufferingDodgeRoll)
+	{ // if was buffering the dodge roll when landed
+
+		// dodge roll
+		bIsBufferingDodgeRoll = false;
+		DoDodgeRoll();
+	}
 }
 
 FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
@@ -293,6 +307,26 @@ void ADungeonClashCharacter::PlaySound(USoundBase* SB, float volumeMultiplier, f
 	float pitch = (pitchRandomizeRange > .0f) ? FMath::RandRange(1.f - pitchRandomizeRange, 1.f + pitchRandomizeRange) : 1.f;
 
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, GetActorLocation(), volumeMultiplier, pitch);
+}
+
+void ADungeonClashCharacter::UpdateMovementInput()
+{
+	if (GetController() == nullptr) return;
+	
+	// find out which way is forward
+	const FRotator Rotation = GetController()->GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+	// get forward vector
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+	// get right vector 
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	// update movement input direction
+	MovementInputDir = FVector::Zero();
+	MovementInputDir += RightDirection * MovementVector.X;
+	MovementInputDir += ForwardDirection * MovementVector.Y;
 }
 
 void ADungeonClashCharacter::SetIfCanMove(bool canWalk, bool canJump, bool canDodgeRoll)
@@ -351,11 +385,20 @@ void ADungeonClashCharacter::ResetMaxWalkSpeed()
 
 void ADungeonClashCharacter::DoDodgeRoll()
 {
-	// can only dodge roll if enabled and is not currently dodge rolling
-	if (bDodgeRollingDisabled || bIsDodgeRolling) return;
+	// can only dodge roll if enabled
+	if (bDodgeRollingDisabled) return;
 
-	// can only dodge roll if is on the ground
-	if (!GetCharacterMovement()->IsMovingOnGround()) return;
+	// can only dodge roll if is not currently dodge rolling and is on the ground
+	if (bIsDodgeRolling || !GetCharacterMovement()->IsMovingOnGround())
+	{
+		if (bCanBufferDodgeRoll)
+		{
+			// set to buffer the input to dodge roll later
+			bIsBufferingDodgeRoll = true;
+			bIsBufferingJump = false;
+		}
+		return;
+	}
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (!IsValid(AnimInstance)) return;
@@ -368,14 +411,16 @@ void ADungeonClashCharacter::DoDodgeRoll()
 
 	// start dodge rolling
 	bIsDodgeRolling = true;
+	bCanBufferDodgeRoll = false;
 
 	// make the player invincible during the dodge roll
 	if (IsValid(HealthComp)) HealthComp->SetIfInvincible(true);
 	
-	if (!GetLastMovementInputVector().IsZero())
+	UpdateMovementInput();
+	if (!MovementInputDir.IsZero())
 	{
 		// rotate immediately towards the input direction
-		FRotator fRot = GetLastMovementInputVector().Rotation();
+		FRotator fRot = MovementInputDir.Rotation();
 		SetActorRotation(fRot, ETeleportType::TeleportPhysics);
 	}
 
@@ -392,6 +437,8 @@ void ADungeonClashCharacter::DoDodgeRoll()
 
 void ADungeonClashCharacter::OnDodgeRollEnd()
 {
+	// enable buffering the dodge roll input
+	bCanBufferDodgeRoll = true;
 }
 
 void ADungeonClashCharacter::DodgeRollTimelineUpdate(float curveVal)
@@ -417,4 +464,19 @@ void ADungeonClashCharacter::DodgeRollTimelineFinished()
 
 	// disable invincibility
 	if (IsValid(HealthComp)) HealthComp->SetIfInvincible(false);
+
+	if (bIsBufferingDodgeRoll)
+	{ // if was buffering the dodge roll when ended dodge rolling
+
+		// dodge roll again
+		bIsBufferingDodgeRoll = false;
+		DoDodgeRoll();
+	}
+	else if (bIsBufferingJump)
+	{ // if was buffering the jump when ended dodge rolling
+		
+		// jump
+		bIsBufferingJump = false;
+		DoJump();
+	}
 }
