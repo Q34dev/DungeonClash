@@ -133,6 +133,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_Land;
 
+	// Dodge roll sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_DodgeRoll;
+
 public:
 
 	/** Constructor */

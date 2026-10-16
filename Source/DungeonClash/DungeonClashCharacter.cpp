@@ -424,6 +424,9 @@ void ADungeonClashCharacter::DoDodgeRoll()
 		SetActorRotation(fRot, ETeleportType::TeleportPhysics);
 	}
 
+	// play the sound
+	PlaySound(sb_DodgeRoll, .9f, .3f);
+
 	// play the animation montage
 	AnimInstance->Montage_Play(am_DodgeRoll, dodgeRollPlayRate, EMontagePlayReturnType::MontageLength, dodgeRollMontageStartTime);
 
