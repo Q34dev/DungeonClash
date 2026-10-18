@@ -13,6 +13,10 @@ public:
 	// Sets default values for this actor's properties
 	APickupableItem();
 
+	// Item mesh
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* ItemMesh;
+
 	// The pickup trigger collider
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UBoxComponent* PickupTrigger;

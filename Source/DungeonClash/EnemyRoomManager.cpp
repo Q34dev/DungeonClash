@@ -2,6 +2,7 @@
 #include "Components/BoxComponent.h"
 #include "DungeonClashCharacter.h"
 #include "EnemyManager.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AEnemyRoomManager::AEnemyRoomManager()
@@ -56,8 +57,15 @@ void AEnemyRoomManager::OnEntranceTriggerOverlapEnd(UPrimitiveComponent* Overlap
 	// if the room is not active already and not finished yet:
 
 	if (!IsValid(OtherActor)) return;
-	if (!Cast<ADungeonClashCharacter>(OtherActor)) return;
-	// if player finished overlapping with the trigger
+
+	ADungeonClashCharacter* PlayerCharacter = Cast<ADungeonClashCharacter>(OtherActor);
+	if (!IsValid(PlayerCharacter)) return;
+
+	UCapsuleComponent* CapsuleComp = Cast<UCapsuleComponent>(OtherComp);
+	if (!IsValid(CapsuleComp)) return;
+
+	if (CapsuleComp != PlayerCharacter->GetCapsuleComponent()) return;
+	// if player's capsule component finished overlapping with the trigger:
 
 	bIsEnemyRoomActive = true;
 
