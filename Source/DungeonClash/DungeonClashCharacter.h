@@ -237,6 +237,10 @@ public:
 	UFUNCTION()
 	void ResetMaxWalkSpeed();
 
+	// Executed when the player picks up a health potion item
+	UFUNCTION()
+	void PickedUpAHealthPotion();
+
 protected:
 
 	// movement input vector
@@ -250,4 +254,7 @@ protected:
 	bool bIsBufferingJump = false;
 	bool bIsBufferingDodgeRoll = false;
 	bool bCanBufferDodgeRoll = false;
+
+	// the amount of health potions the player has
+	int healthPotionCount = 0;
 };

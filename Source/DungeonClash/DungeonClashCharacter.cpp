@@ -383,6 +383,14 @@ void ADungeonClashCharacter::ResetMaxWalkSpeed()
 	}
 }
 
+void ADungeonClashCharacter::PickedUpAHealthPotion()
+{
+	// increase the amount of owned potions
+	healthPotionCount++;
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Health potion count: %d"), healthPotionCount));
+}
+
 void ADungeonClashCharacter::DoDodgeRoll()
 {
 	// can only dodge roll if enabled
