@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual float GetHealth();
 
+	UFUNCTION(BlueprintCallable)
+	bool HasFullHealth();
+
 	UFUNCTION()
 	void SetIfInvincible(bool bSetInvincible);
 

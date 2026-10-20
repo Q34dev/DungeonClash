@@ -146,6 +146,9 @@ void ADungeonClashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Dodge rolling
 		EnhancedInputComponent->BindAction(DodgeRollAction, ETriggerEvent::Triggered, this, &ADungeonClashCharacter::DoDodgeRoll);
+
+		// Healing
+		EnhancedInputComponent->BindAction(HealAction, ETriggerEvent::Triggered, this, &ADungeonClashCharacter::DoHeal);
 	}
 	else
 	{
@@ -490,4 +493,22 @@ void ADungeonClashCharacter::DodgeRollTimelineFinished()
 		bIsBufferingJump = false;
 		DoJump();
 	}
+}
+
+void ADungeonClashCharacter::DoHeal()
+{
+	if (healthPotionCount <= 0) return;
+	// if the player has any health potions:
+
+	if (!IsValid(HealthComp)) return;
+	if (HealthComp->HasFullHealth()) return;
+	// if the player doesn't have full health yet:
+
+	// heal
+	HealthComp->AddHealth(healedHealthAmount);
+
+	// decrease the potion count
+	healthPotionCount--;
+	
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Health potion count: %d"), healthPotionCount));
 }

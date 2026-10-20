@@ -77,6 +77,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
 	UCurveFloat* DodgeRollTimelineCurve;
 
+	// The amount of health added when used a health potion
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float healedHealthAmount = 1.f;
+
 	// A boolean indicating if walking input is ignored
 	UPROPERTY(BlueprintReadOnly)
 	bool bWalkingDisabled = false;
@@ -124,6 +128,10 @@ protected:
 	/** Dodge roll Input Action */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* DodgeRollAction;
+
+	/** Heal Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* HealAction;
 
 	// Jump sound
 	UPROPERTY(EditAnywhere, Category = "Audio")
@@ -202,6 +210,9 @@ public:
 	void DodgeRollTimelineUpdate(float curveVal);
 	UFUNCTION()
 	void DodgeRollTimelineFinished();
+
+	// Healing using a health potion
+	void DoHeal();
 
 public:
 

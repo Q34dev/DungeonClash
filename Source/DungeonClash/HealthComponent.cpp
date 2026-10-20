@@ -69,6 +69,11 @@ float UHealthComponent::GetHealth()
 	return currentHealth;
 }
 
+bool UHealthComponent::HasFullHealth()
+{
+	return currentHealth >= maxHealth;
+}
+
 void UHealthComponent::SetIfInvincible(bool bSetInvincible)
 {
 	bIsInvincible = bSetInvincible;
