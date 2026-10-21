@@ -23,7 +23,7 @@ void UPlayerHealthBar::BindPlayerEvents()
 		{
 			if (const ADungeonClashCharacter* CustomLocalPawn = Cast<ADungeonClashCharacter>(LocalPawn))
 			{
-				CustomLocalPawn->GetOnDamageReceivedEvent().AddUObject(this, &UHealthBar::OnDamageReceived);
+				CustomLocalPawn->GetOnHealthChangedEvent().AddUObject(this, &UHealthBar::OnHealthChanged);
 			}
 		}
 	}
@@ -37,7 +37,7 @@ void UPlayerHealthBar::UnbindPlayerEvents()
 		{
 			if (const ADungeonClashCharacter* CustomLocalPawn = Cast<ADungeonClashCharacter>(LocalPawn))
 			{
-				CustomLocalPawn->GetOnDamageReceivedEvent().RemoveAll(this);
+				CustomLocalPawn->GetOnHealthChangedEvent().RemoveAll(this);
 			}
 		}
 	}

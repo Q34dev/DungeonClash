@@ -10,16 +10,16 @@ void UHealthBar::NativeConstruct()
 	SetHealthMaterialParameter(PreviousHealthParameterName, 1.0f);
 }
 
-void UHealthBar::OnDamageReceived(const float newHealth, const float previousHealth, const float maxHealth)
+void UHealthBar::OnHealthChanged(const float newHealth, const float previousHealth, const float maxHealth)
 {
 	normalizedHealthVal = newHealth / maxHealth;
 	normalizedPreviousHealthVal = previousHealth / maxHealth;
 
 	SetHealthMaterialParameter(HealthParameterName, normalizedHealthVal);
 
-	if (!IsValid(DamageAnim)) return;
+	if (!IsValid(HealthChangeAnim)) return;
 
-	PlayAnimation(DamageAnim);
+	PlayAnimation(HealthChangeAnim);
 }
 
 void UHealthBar::ResetHealthBar()

@@ -294,12 +294,12 @@ void ADungeonClashCharacter::OnLand()
 	}
 }
 
-FOnDamageReceived& ADungeonClashCharacter::GetOnDamageReceivedEvent() const
+FOnHealthChanged& ADungeonClashCharacter::GetOnHealthChangedEvent() const
 {
-	FOnDamageReceived NullReturn;
+	FOnHealthChanged NullReturn;
 	if (!IsValid(HealthComp)) return NullReturn;
 
-	return HealthComp->OnDamageReceived;
+	return HealthComp->OnHealthChanged;
 }
 
 void ADungeonClashCharacter::PlaySound(USoundBase* SB, float volumeMultiplier, float pitchRandomizeRange)

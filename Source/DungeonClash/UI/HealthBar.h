@@ -15,7 +15,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	TObjectPtr<UWidgetAnimation> DamageAnim = nullptr;
+	TObjectPtr<UWidgetAnimation> HealthChangeAnim = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UImage> HealthBarImage = nullptr;
@@ -41,6 +41,6 @@ private:
 	float normalizedPreviousHealthVal = 1.f;
 
 public:
-	void OnDamageReceived(const float newHealth, const float previousHealth, const float maxHealth);
+	void OnHealthChanged(const float newHealth, const float previousHealth, const float maxHealth);
 	void ResetHealthBar();
 };

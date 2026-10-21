@@ -36,7 +36,7 @@ void UHealthComponent::TakeDamage(float damage)
 	// set health to the decreased value
 	SetHealth(currentHealth - damage);
 
-	OnDamageReceived.Broadcast(currentHealth, previousHealth, maxHealth);
+	OnHealthChanged.Broadcast(currentHealth, previousHealth, maxHealth);
 
 	// play the damage taken sound
 	PlaySound(sb_DamageTaken, 1.f, .2f);
@@ -51,8 +51,12 @@ void UHealthComponent::TakeDamage(float damage)
 
 void UHealthComponent::AddHealth(float health)
 {
+	float previousHealth = currentHealth;
+
 	// set health to the increased value
 	SetHealth(currentHealth + health);
+
+	OnHealthChanged.Broadcast(currentHealth, previousHealth, maxHealth);
 }
 
 void UHealthComponent::ResetHealth()

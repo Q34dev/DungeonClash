@@ -222,7 +222,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	FOnDamageReceived& GetOnDamageReceivedEvent() const;
+	FOnHealthChanged& GetOnHealthChangedEvent() const;
 
 	void PlaySound(USoundBase* SB, float volumeMultiplier = 1.f, float pitchRandomizeRange = .0f);
 

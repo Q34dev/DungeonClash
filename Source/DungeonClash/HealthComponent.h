@@ -6,7 +6,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHealthUpdate, float, newHealth, float, previousHealth, float, maxHealth);
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnDamageReceived, float /* newHealth */, float /* previousHealth */, float /* maxHealth */);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnHealthChanged, float /* newHealth */, float /* previousHealth */, float /* maxHealth */);
 
 class USoundBase;
 
@@ -67,7 +67,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthUpdate OnHealthUpdate;
 
-	FOnDamageReceived OnDamageReceived;
+	FOnHealthChanged OnHealthChanged;
 
 	// Damage taken sound
 	UPROPERTY(EditAnywhere, Category = "Audio")

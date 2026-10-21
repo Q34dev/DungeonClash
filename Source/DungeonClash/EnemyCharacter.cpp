@@ -190,7 +190,7 @@ void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, floa
 		HealthBarWidgetComp->SetVisibility(true);
 
 		// update the health bar
-		if (IsValid(HealthBar)) HealthBar->OnDamageReceived(newHealth, previousHealth, maxHealth);
+		if (IsValid(HealthBar)) HealthBar->OnHealthChanged(newHealth, previousHealth, maxHealth);
 	}
 }
 
