@@ -10,6 +10,8 @@
 #include "Components/TimelineComponent.h"
 #include "DungeonClashCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHealthPotionCountChanged);
+
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
@@ -251,6 +253,13 @@ public:
 	// Executed when the player picks up a health potion item
 	UFUNCTION()
 	void PickedUpAHealthPotion();
+
+	// Managing the health potion count
+	void SetHealthPotionCount(int count);
+	int GetHealthPotionCount();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthPotionCountChanged OnHealthPotionCountChanged;
 
 protected:
 

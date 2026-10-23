@@ -107,6 +107,9 @@ void ADungeonClashCharacter::BeginPlay()
 		DodgeRollTimelineComp->SetPlayRate(dodgeRollPlayRate);
 		DodgeRollTimelineComp->SetTimelineLengthMode(TL_LastKeyFrame);
 	}
+
+	// reset the health potion count
+	SetHealthPotionCount(0);
 }
 
 void ADungeonClashCharacter::Tick(float DeltaTime)
@@ -389,9 +392,18 @@ void ADungeonClashCharacter::ResetMaxWalkSpeed()
 void ADungeonClashCharacter::PickedUpAHealthPotion()
 {
 	// increase the amount of owned potions
-	healthPotionCount++;
+	SetHealthPotionCount(healthPotionCount + 1);
+}
 
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Health potion count: %d"), healthPotionCount));
+void ADungeonClashCharacter::SetHealthPotionCount(int count)
+{
+	healthPotionCount = count;
+	OnHealthPotionCountChanged.Broadcast();
+}
+
+int ADungeonClashCharacter::GetHealthPotionCount()
+{
+	return healthPotionCount;
 }
 
 void ADungeonClashCharacter::DoDodgeRoll()
@@ -497,7 +509,7 @@ void ADungeonClashCharacter::DodgeRollTimelineFinished()
 
 void ADungeonClashCharacter::DoHeal()
 {
-	if (healthPotionCount <= 0) return;
+	if (GetHealthPotionCount() <= 0) return;
 	// if the player has any health potions:
 
 	if (!IsValid(HealthComp)) return;
@@ -508,7 +520,5 @@ void ADungeonClashCharacter::DoHeal()
 	HealthComp->AddHealth(healedHealthAmount);
 
 	// decrease the potion count
-	healthPotionCount--;
-	
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Health potion count: %d"), healthPotionCount));
+	SetHealthPotionCount(healthPotionCount - 1);
 }
