@@ -516,8 +516,8 @@ void ADungeonClashCharacter::DoHeal()
 	if (HealthComp->HasFullHealth()) return;
 	// if the player doesn't have full health yet:
 
-	// heal
-	HealthComp->AddHealth(healedHealthAmount);
+	// fully heal
+	HealthComp->RefillHealthToMax();
 
 	// decrease the potion count
 	SetHealthPotionCount(healthPotionCount - 1);

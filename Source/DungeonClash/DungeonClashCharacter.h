@@ -79,10 +79,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
 	UCurveFloat* DodgeRollTimelineCurve;
 
-	// The amount of health added when used a health potion
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float healedHealthAmount = 1.f;
-
 	// A boolean indicating if walking input is ignored
 	UPROPERTY(BlueprintReadOnly)
 	bool bWalkingDisabled = false;

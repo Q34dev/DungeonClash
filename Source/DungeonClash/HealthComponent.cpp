@@ -68,6 +68,16 @@ void UHealthComponent::ResetHealth()
 	bIsDead = false;
 }
 
+void UHealthComponent::RefillHealthToMax()
+{
+	float previousHealth = currentHealth;
+
+	// set health to the max value
+	SetHealth(maxHealth);
+
+	OnHealthChanged.Broadcast(currentHealth, previousHealth, maxHealth);
+}
+
 float UHealthComponent::GetHealth()
 {
 	return currentHealth;

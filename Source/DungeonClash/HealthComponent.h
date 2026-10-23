@@ -41,6 +41,9 @@ public:
 	virtual void ResetHealth();
 
 	UFUNCTION(BlueprintCallable)
+	virtual void RefillHealthToMax();
+
+	UFUNCTION(BlueprintCallable)
 	virtual float GetHealth();
 
 	UFUNCTION(BlueprintCallable)
