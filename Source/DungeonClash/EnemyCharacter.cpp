@@ -75,7 +75,7 @@ void AEnemyCharacter::Attack()
 
 	bShouldDealDamage = false;
 
-	// disable sword collision
+	// disable the attack collision
 	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
 	// play the attack animation
@@ -86,15 +86,21 @@ void AEnemyCharacter::OnSlashBegin()
 {
 	bShouldDealDamage = true;
 
-	// enable sword collision
+	// enable the attack collision
 	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
+
+	// play the attack sound
+	if (IsValid(sb_Attack) && IsValid(GetWorld()))
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_Attack, GetActorLocation());
+	}
 }
 
 void AEnemyCharacter::OnSlashEnd()
 {
 	bShouldDealDamage = false;
 
-	// disable sword collision
+	// disable the attack collision
 	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
 }
 

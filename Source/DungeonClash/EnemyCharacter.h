@@ -47,6 +47,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float attackDamage = 1.f;
 
+	// Attack sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_Attack;
+
 	void Attack();
 
 	void OnSlashBegin(); // Anim Notify State Start
