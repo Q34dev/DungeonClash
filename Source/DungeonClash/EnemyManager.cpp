@@ -66,6 +66,12 @@ void AEnemyManager::SpawnEnemy()
 		
 		GetWorld()->SpawnActor<AEnemyCharacter>(EnemyBlueprint, SpawnLocation, SpawnRotation, SpawnParameters);
 	}
+
+	// play the spawn sound
+	if (IsValid(sb_EnemySpawn) && IsValid(GetWorld()))
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_EnemySpawn, SpawnLocation);
+	}
 }
 
 void AEnemyManager::StartWave(int waveIndex)

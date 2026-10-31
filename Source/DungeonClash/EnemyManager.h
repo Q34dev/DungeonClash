@@ -20,6 +20,10 @@ public:
 
 	// A container that stores already spawned enemy actors
 	TArray<AEnemyCharacter*> EnemyPool;
+	
+	// Enemy spawn sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_EnemySpawn;
 
 protected:
 	// Called when the game starts or when spawned
