@@ -21,6 +21,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UBoxComponent* PickupTrigger;
 
+	// Item picked up sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_PickedUp;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

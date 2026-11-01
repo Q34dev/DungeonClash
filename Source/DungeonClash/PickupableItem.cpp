@@ -32,7 +32,14 @@ void APickupableItem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void APickupableItem::PickedUp() {}
+void APickupableItem::PickedUp()
+{
+	// play the picked up sound
+	if (IsValid(sb_PickedUp) && IsValid(GetWorld()))
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_PickedUp, GetActorLocation());
+	}
+}
 
 void APickupableItem::OnPickupTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

@@ -4,6 +4,8 @@
 
 void APItem_HealthPotion::PickedUp()
 {
+	Super::PickedUp();
+
 	// get the player character
 	ACharacter* PCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
 	if (IsValid(PCharacter))
