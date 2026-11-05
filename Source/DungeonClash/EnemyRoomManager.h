@@ -45,12 +45,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoomManagement")
 	class AEnemyManager* EnemyManager;
 
-	// The parent object of attached enemy spawn points
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoomManagement")
-	AActor* SpawnPointsParent;
-
 	// The enemy spawn points
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Management")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoomManagement")
 	TArray<AActor*> SpawnPoints;
 
 	// An array of gateway barriers that block the room entrances and exits
