@@ -49,6 +49,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float attackMaxWalkSpeed = 1.f;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackComboKnockbackForce = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackFinishKnockbackForce = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackKnockbackDirZ = 1.f;
+
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_AttackCombo;
 	UPROPERTY(EditAnywhere, Category = "Audio")
@@ -77,7 +84,7 @@ public:
 	void OnSlashEnd();  // Anim Notify State End
 	void OnAttackEnd(); // Anim Notify
 
-	void Hit(UHealthComponent* hitActor);
+	void Hit(UHealthComponent* HitActor);
 
 	// Sword collision
 	UFUNCTION()

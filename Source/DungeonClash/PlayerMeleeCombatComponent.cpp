@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HealthComponent.h"
 #include "HitCamShake.h"
+#include "Engine/StaticMeshActor.h"
 
 // Sets default values for this component's properties
 UPlayerMeleeCombatComponent::UPlayerMeleeCombatComponent()
@@ -180,15 +181,39 @@ void UPlayerMeleeCombatComponent::OnAttackEnd()
 	EndAttack();
 }
 
-void UPlayerMeleeCombatComponent::Hit(UHealthComponent* hitActor)
+void UPlayerMeleeCombatComponent::Hit(UHealthComponent* HitActor)
 {
 	// check if is the finishing hit
 	bool finishHit = attackComboIndex == 2;
 	float dealtDamage = finishHit ? attackFinishDamage : attackComboDamage;
 
 	// deal damage to the hit actor
-	hitActor->TakeDamage(dealtDamage);
+	HitActor->TakeDamage(dealtDamage);
 	
+	if (IsValid(HitActor->GetOwner()))
+	{
+		ACharacter* HitCharacter = Cast<ACharacter>(HitActor->GetOwner());
+		if (IsValid(HitCharacter))
+		{
+			UCharacterMovementComponent* MovComp = HitCharacter->GetCharacterMovement();
+			if (IsValid(MovComp))
+			{
+				// knock the hit actor back:
+
+				FVector PlayerLocation = GetOwner()->GetActorLocation();
+				FVector HitActorLocation = HitCharacter->GetActorLocation();
+
+				FVector KnockbackDir = HitActorLocation - PlayerLocation;
+				KnockbackDir.Normalize();
+				KnockbackDir.Z = attackKnockbackDirZ;
+
+				float knockbackForce = finishHit ? attackFinishKnockbackForce : attackComboKnockbackForce;
+
+				HitCharacter->LaunchCharacter(KnockbackDir * knockbackForce, true, true);
+			}
+		}
+	}
+
 	// play the hit sounds
 	PlaySound(sb_HitCombo);
 	if (finishHit) PlaySound(sb_HitFinish);

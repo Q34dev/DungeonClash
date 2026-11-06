@@ -140,6 +140,11 @@ void AEnemyCharacter::ActivateEnemy()
 	// enable ticking
 	SetActorTickEnabled(true);
 
+	// reset force
+	GetCharacterMovement()->ClearAccumulatedForces();
+	GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	LaunchCharacter(FVector::ZeroVector, true, true);
+
 	// enable AI logic
 	AAIController* AIController = Cast<AAIController>(GetController());
 	if (IsValid(AIController))
@@ -168,6 +173,11 @@ void AEnemyCharacter::DeactivateEnemy()
 
 	// disable ticking
 	SetActorTickEnabled(false);
+
+	// reset force
+	GetCharacterMovement()->ClearAccumulatedForces();
+	GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	LaunchCharacter(FVector::ZeroVector, true, true);
 
 	// disable AI logic
 	AAIController* AIController = Cast<AAIController>(GetController());
