@@ -39,6 +39,9 @@ void UPlayerMeleeCombatComponent::TickComponent(float DeltaTime, ELevelTick Tick
 
 void UPlayerMeleeCombatComponent::Attack()
 {
+	// can only attack if not on cooldown
+	if (bIsAttackOnCooldown) return;
+
 	// can only attack if is on the ground
 	if (ParentCharacter && !ParentCharacter->GetCharacterMovement()->IsMovingOnGround()) return;
 
@@ -102,6 +105,17 @@ void UPlayerMeleeCombatComponent::EndAttack()
 		// stop the attack animation
 		ParentCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(attackMontageBlendOutTime);
 	}
+
+	// start the attack cooldown timer
+	bIsAttackOnCooldown = true;
+	GetWorld()->GetTimerManager().SetTimer
+	(
+		AttackCooldownTimerHandle,
+		this,
+		&UPlayerMeleeCombatComponent::AttackCooldownFinished,
+		attackCooldownDuration,
+		false
+	);
 }
 
 void UPlayerMeleeCombatComponent::OnSlashBegin()
@@ -179,6 +193,11 @@ void UPlayerMeleeCombatComponent::OnSlashEnd()
 void UPlayerMeleeCombatComponent::OnAttackEnd()
 {
 	EndAttack();
+}
+
+void UPlayerMeleeCombatComponent::AttackCooldownFinished()
+{
+	bIsAttackOnCooldown = false;
 }
 
 void UPlayerMeleeCombatComponent::Hit(UHealthComponent* HitActor)

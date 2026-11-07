@@ -50,6 +50,9 @@ public:
 	float attackMaxWalkSpeed = 1.f;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
+	float attackCooldownDuration = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	float attackComboKnockbackForce = 1.f;
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float attackFinishKnockbackForce = 1.f;
@@ -83,6 +86,11 @@ public:
 	void OnSlashBegin(); // Anim Notify State Start
 	void OnSlashEnd();  // Anim Notify State End
 	void OnAttackEnd(); // Anim Notify
+
+	// Handling the attack cooldown
+	FTimerHandle AttackCooldownTimerHandle;
+	void AttackCooldownFinished();
+	bool bIsAttackOnCooldown = false;
 
 	void Hit(UHealthComponent* HitActor);
 
