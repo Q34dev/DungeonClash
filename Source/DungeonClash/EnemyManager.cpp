@@ -107,6 +107,12 @@ void AEnemyManager::StartWave(int waveIndex)
 	}
 }
 
+void AEnemyManager::StartFirstWave()
+{
+	// begin the room's first wave
+	StartWave(0);
+}
+
 void AEnemyManager::StartNextWave()
 {
 	StartWave(currentWaveIndex + 1);
@@ -120,23 +126,44 @@ void AEnemyManager::FinishWave()
 	if (wavesLeft <= 0)
 	{ // when all the waves finished
 
-		if (IsValid(CurrentEnemyRoom))
-		{
-			CurrentEnemyRoom->OnAllWavesFinished();
-		}
-
-		waveCount = 0;
-		wavesLeft = 0;
-		currentWaveIndex = 0;
-		currentEnemyIndex = 0;
-		enemiesLeftInWave = 0;
-		CurrentEnemyRoom = nullptr;
+		// start the all waves finished timer
+		GetWorld()->GetTimerManager().SetTimer
+		(
+			WaveTimerHandle,
+			this,
+			&AEnemyManager::AllWavesFinished,
+			allWavesFinishedTime,
+			false
+		);
 	}
 	else
 	{ // if not all waves finished
 
-		StartNextWave();
+		// start the wave interval timer
+		GetWorld()->GetTimerManager().SetTimer
+		(
+			WaveTimerHandle,
+			this,
+			&AEnemyManager::StartNextWave,
+			waveIntervalDuration,
+			false
+		);
 	}
+}
+
+void AEnemyManager::AllWavesFinished()
+{
+	if (IsValid(CurrentEnemyRoom))
+	{
+		CurrentEnemyRoom->OnAllWavesFinished();
+	}
+
+	waveCount = 0;
+	wavesLeft = 0;
+	currentWaveIndex = 0;
+	currentEnemyIndex = 0;
+	enemiesLeftInWave = 0;
+	CurrentEnemyRoom = nullptr;
 }
 
 void AEnemyManager::SetCurrentEnemyRoom(AEnemyRoomManager* Room)
@@ -154,8 +181,15 @@ void AEnemyManager::SetCurrentEnemyRoom(AEnemyRoomManager* Room)
 	currentEnemyIndex = 0;
 	enemiesLeftInWave = 0;
 
-	// begin the room's first wave
-	StartWave(0);
+	// start the timer for the first wave
+	GetWorld()->GetTimerManager().SetTimer
+	(
+		WaveTimerHandle,
+		this,
+		&AEnemyManager::StartFirstWave,
+		firstWaveStartTime,
+		false
+	);
 }
 
 void AEnemyManager::OnEnemyDied(class AEnemyCharacter* DeadEnemy)

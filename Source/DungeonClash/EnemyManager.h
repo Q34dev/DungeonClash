@@ -16,6 +16,15 @@ public:
 	AEnemyManager();
 
 	UPROPERTY(EditAnywhere, Category = "Management")
+	float waveIntervalDuration = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Management")
+	float firstWaveStartTime = 1.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Management")
+	float allWavesFinishedTime = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Management")
 	TSubclassOf<AEnemyCharacter> EnemyBlueprint;
 
 	// A container that stores already spawned enemy actors
@@ -48,6 +57,9 @@ protected:
 	// The number of enemies remaining in the current wave
 	int enemiesLeftInWave = 0;
 
+	// The handle for wave timers
+	FTimerHandle WaveTimerHandle;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -57,8 +69,10 @@ public:
 
 	// Methods for managing enemy waves
 	void StartWave(int waveIndex);
+	void StartFirstWave();
 	void StartNextWave();
 	void FinishWave();
+	void AllWavesFinished();
 
 	// A method to set the room that the player is in
 	void SetCurrentEnemyRoom(AEnemyRoomManager* Room);
