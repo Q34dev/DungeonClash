@@ -108,8 +108,8 @@ void ADungeonClashCharacter::BeginPlay()
 		DodgeRollTimelineComp->SetTimelineLengthMode(TL_LastKeyFrame);
 	}
 
-	// reset the health potion count
-	SetHealthPotionCount(0);
+	// set the starting health potion count
+	SetHealthPotionCount(1);
 }
 
 void ADungeonClashCharacter::Tick(float DeltaTime)
