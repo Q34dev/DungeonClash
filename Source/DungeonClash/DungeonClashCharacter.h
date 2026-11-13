@@ -55,6 +55,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UHealthComponent* HealthComp;
 
+	// Heal animation potion mesh
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* PotionMesh;
+
+	// Heal animation montage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* am_Heal;
+
 	// Dodge roll animation montage
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DodgeRoll")
 	UAnimMontage* am_DodgeRoll;
@@ -211,6 +219,8 @@ public:
 
 	// Healing using a health potion
 	void DoHeal();
+	void HealAnimAddHealth();
+	void OnHealAnimEnd();
 
 public:
 

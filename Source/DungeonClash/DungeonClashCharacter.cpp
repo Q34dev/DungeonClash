@@ -63,6 +63,10 @@ ADungeonClashCharacter::ADungeonClashCharacter()
 	// Create the health component
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
+	// Create the heal animation potion mesh
+	PotionMesh = CreateDefaultSubobject<UStaticMeshComponent>("Potion");
+	if (IsValid(PotionMesh)) PotionMesh->SetupAttachment(GetMesh(), "Potion_Socket");
+
 	// Create the dodge roll timeline component
 	DodgeRollTimelineComp = CreateDefaultSubobject<UTimelineComponent>(TEXT("DodgeRollTimelineComponent"));
 
@@ -107,6 +111,8 @@ void ADungeonClashCharacter::BeginPlay()
 		DodgeRollTimelineComp->SetPlayRate(dodgeRollPlayRate);
 		DodgeRollTimelineComp->SetTimelineLengthMode(TL_LastKeyFrame);
 	}
+
+	if (IsValid(PotionMesh)) PotionMesh->SetVisibility(false);
 
 	// set the starting health potion count
 	SetHealthPotionCount(1);
@@ -516,9 +522,39 @@ void ADungeonClashCharacter::DoHeal()
 	if (HealthComp->HasFullHealth()) return;
 	// if the player doesn't have full health yet:
 
-	// fully heal
-	HealthComp->RefillHealthToMax();
-
 	// decrease the potion count
 	SetHealthPotionCount(healthPotionCount - 1);
+
+	// begin playing the heal animation:
+
+	// block input
+	SetIfCanMove(false, false, false);
+	SetIfCanAttack(false);
+
+	// show the potion
+	if (IsValid(PotionMesh)) PotionMesh->SetVisibility(true);
+
+	// play the heal animation
+	if (IsValid(am_Heal) && IsValid(GetMesh()->GetAnimInstance()))
+		GetMesh()->GetAnimInstance()->Montage_Play(am_Heal);
+}
+
+void ADungeonClashCharacter::HealAnimAddHealth()
+{
+	// fully heal
+	HealthComp->RefillHealthToMax();
+}
+
+void ADungeonClashCharacter::OnHealAnimEnd()
+{
+	// hide the potion
+	if (IsValid(PotionMesh)) PotionMesh->SetVisibility(false);
+
+	// stop the heal animation
+	if (IsValid(am_Heal) && IsValid(GetMesh()->GetAnimInstance()))
+		GetMesh()->GetAnimInstance()->Montage_Stop(.5f, am_Heal);
+
+	// reenable input
+	SetIfCanMove(true, true, true);
+	SetIfCanAttack(true);
 }
