@@ -8,5 +8,5 @@ void UAN_OnWalkStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase*
 	ADungeonClashCharacter* OwnerCharacter = Cast<ADungeonClashCharacter>(MeshComp->GetOwner());
 	if (!IsValid(OwnerCharacter)) return;
 
-	OwnerCharacter->PlaySound(sb_WalkStepSound, .5f, .1f);
+	OwnerCharacter->PlaySound(sb_WalkStepSound, .2f, .2f);
 }
