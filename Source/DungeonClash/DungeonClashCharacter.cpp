@@ -537,12 +537,18 @@ void ADungeonClashCharacter::DoHeal()
 	// play the heal animation
 	if (IsValid(am_Heal) && IsValid(GetMesh()->GetAnimInstance()))
 		GetMesh()->GetAnimInstance()->Montage_Play(am_Heal);
+
+	// play the heal start sound
+	PlaySound(sb_HealStart, .6f);
 }
 
 void ADungeonClashCharacter::HealAnimAddHealth()
 {
 	// fully heal
 	HealthComp->RefillHealthToMax();
+
+	// play the heal sound
+	PlaySound(sb_Heal, .6f);
 }
 
 void ADungeonClashCharacter::OnHealAnimEnd()

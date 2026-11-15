@@ -151,6 +151,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_DodgeRoll;
 
+	// Heal sounds
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_HealStart;
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_Heal;
+
 public:
 
 	/** Constructor */
