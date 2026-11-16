@@ -515,6 +515,15 @@ void ADungeonClashCharacter::DodgeRollTimelineFinished()
 
 void ADungeonClashCharacter::DoHeal()
 {
+	// can only heal if is on the ground
+	if (!GetCharacterMovement()->IsMovingOnGround()) return;
+
+	// cant heal if is currently dodge rolling
+	if (bIsDodgeRolling) return;
+
+	// if is in a situation in which cant jump then also cant heal
+	if (bJumpingDisabled) return;
+
 	if (GetHealthPotionCount() <= 0) return;
 	// if the player has any health potions:
 
