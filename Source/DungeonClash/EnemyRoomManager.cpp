@@ -3,6 +3,7 @@
 #include "DungeonClashCharacter.h"
 #include "EnemyManager.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemyRoomManager::AEnemyRoomManager()
@@ -23,7 +24,7 @@ void AEnemyRoomManager::BeginPlay()
 	Super::BeginPlay();
 
 	// deactivate the barriers at the start to let the player in
-	SetBarriersActive(false);
+	SetBarriersActive(false, false);
 }
 
 // Called every frame
@@ -32,7 +33,7 @@ void AEnemyRoomManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AEnemyRoomManager::SetBarriersActive(bool active)
+void AEnemyRoomManager::SetBarriersActive(bool active, bool playSound)
 {
 	for (AActor* Barrier : GatewayBarriers)
 	{ // iterate through all gateway barriers
@@ -42,6 +43,10 @@ void AEnemyRoomManager::SetBarriersActive(bool active)
 		
 		// enable/disable barrier collision
 		Barrier->SetActorEnableCollision(active);
+		
+		// play the barrier open/close sound
+		if (playSound && IsValid(EnemyManager))
+			EnemyManager->PlayBarrierSound(Barrier, active);
 	}
 }
 

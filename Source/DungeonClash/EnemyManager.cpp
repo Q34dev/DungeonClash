@@ -166,6 +166,15 @@ void AEnemyManager::AllWavesFinished()
 	CurrentEnemyRoom = nullptr;
 }
 
+void AEnemyManager::PlayBarrierSound(AActor* Barrier, bool barrierActive)
+{
+	if (!IsValid(GetWorld())) return;
+	if (barrierActive && !IsValid(sb_BarrierClose)) return;
+	if (!barrierActive && !IsValid(sb_BarrierOpen)) return;
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), barrierActive ? sb_BarrierClose : sb_BarrierOpen, Barrier->GetActorLocation(), .8f);
+}
+
 void AEnemyManager::SetCurrentEnemyRoom(AEnemyRoomManager* Room)
 {
 	CurrentEnemyRoom = Room;

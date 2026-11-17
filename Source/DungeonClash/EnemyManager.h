@@ -33,6 +33,12 @@ public:
 	// Enemy spawn sound
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_EnemySpawn;
+	
+	// Barrier sounds
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_BarrierOpen;
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_BarrierClose;
 
 protected:
 	// Called when the game starts or when spawned
@@ -73,6 +79,9 @@ public:
 	void StartNextWave();
 	void FinishWave();
 	void AllWavesFinished();
+
+	// A method to play the barrier open/close sounds
+	void PlayBarrierSound(AActor* Barrier, bool barrierActive);
 
 	// A method to set the room that the player is in
 	void SetCurrentEnemyRoom(AEnemyRoomManager* Room);

@@ -72,7 +72,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// A method to activate/deactivate the gateway barriers
-	void SetBarriersActive(bool active);
+	void SetBarriersActive(bool active, bool playSound = true);
 
 	// Entrance trigger overlap method
 	UFUNCTION()
