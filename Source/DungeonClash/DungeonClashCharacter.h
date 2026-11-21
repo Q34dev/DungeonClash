@@ -156,6 +156,8 @@ protected:
 	USoundBase* sb_HealStart;
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_Heal;
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_CantHeal;
 
 public:
 

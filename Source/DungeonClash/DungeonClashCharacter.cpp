@@ -524,12 +524,16 @@ void ADungeonClashCharacter::DoHeal()
 	// if is in a situation in which cant jump then also cant heal
 	if (bJumpingDisabled) return;
 
-	if (GetHealthPotionCount() <= 0) return;
-	// if the player has any health potions:
-
 	if (!IsValid(HealthComp)) return;
-	if (HealthComp->HasFullHealth()) return;
-	// if the player doesn't have full health yet:
+
+	if (GetHealthPotionCount() <= 0 || HealthComp->HasFullHealth())
+	{// if the player doesnt have any health potions or is already on full health
+		
+		// play the cant heal sound
+		PlaySound(sb_CantHeal, .6f);
+		return;
+	}
+	// if the player has any health potions and doesn't have full health yet:
 
 	// decrease the potion count
 	SetHealthPotionCount(healthPotionCount - 1);
