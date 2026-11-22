@@ -56,7 +56,7 @@ public:
 	void OnSlashBegin(); // Anim Notify State Start
 	void OnSlashEnd();  // Anim Notify State End
 
-	void Hit(UHealthComponent* hitActor);
+	void Hit(UHealthComponent* HitActor);
 
 	// Attack collision overlap method
 	UFUNCTION()
@@ -75,4 +75,8 @@ protected:
 	void OnDeath();
 
 	bool bShouldDealDamage;
+
+private:
+	// A container that stores actors that were hit during the current attack
+	TArray<AActor*> HitActors;
 };

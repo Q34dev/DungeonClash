@@ -52,6 +52,9 @@ void AEnemyCharacter::BeginPlay()
 
 	// bind the attack collision overlap method
 	AttackCol->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::OnAttackOverlapBegin);
+	
+	// clear the hit actors array
+	HitActors.Empty();
 }
 
 // Called every frame
@@ -86,6 +89,9 @@ void AEnemyCharacter::OnSlashBegin()
 {
 	bShouldDealDamage = true;
 
+	// clear the hit actors array
+	HitActors.Empty();
+
 	// enable the attack collision
 	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
 
@@ -102,12 +108,21 @@ void AEnemyCharacter::OnSlashEnd()
 
 	// disable the attack collision
 	if (IsValid(AttackCol)) AttackCol->SetGenerateOverlapEvents(bShouldDealDamage);
+
+	// clear the hit actors array
+	HitActors.Empty();
 }
 
-void AEnemyCharacter::Hit(UHealthComponent* hitActor)
+void AEnemyCharacter::Hit(UHealthComponent* HitActor)
 {
+	// skip if this actor was already hit during the current attack
+	if (HitActors.Contains(HitActor)) return;
+
 	// deal damage to the hit actor
-	hitActor->TakeDamage(attackDamage);
+	HitActor->TakeDamage(attackDamage);
+
+	// add the hit actor to the array
+	HitActors.Add(HitActor);
 }
 
 void AEnemyCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -117,13 +132,13 @@ void AEnemyCharacter::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 	if (OtherActor == this) return;
 	
 	// check if the hit actor has a health component
-	UHealthComponent* hitHealthComp = OtherActor->GetComponentByClass<UHealthComponent>();
-	if (!IsValid(hitHealthComp)) return;
+	UHealthComponent* HitHealthComp = OtherActor->GetComponentByClass<UHealthComponent>();
+	if (!IsValid(HitHealthComp)) return;
 
 	// check if the hit collision component was the hitbox of the hit actor
-	if (hitHealthComp->Hitbox != OtherComp) return;
+	if (HitHealthComp->Hitbox != OtherComp) return;
 
-	Hit(hitHealthComp);
+	Hit(HitHealthComp);
 }
 
 void AEnemyCharacter::ActivateEnemy()
