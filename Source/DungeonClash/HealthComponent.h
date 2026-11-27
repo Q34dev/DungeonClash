@@ -76,6 +76,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* sb_DamageTaken;
 
+	// Death sound
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* sb_Death;
+
 private:
 	void PlaySound(USoundBase* SB, float volumeMultiplier = 1.f, float pitchRandomizeRange = .0f);
 };

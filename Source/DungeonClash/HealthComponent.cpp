@@ -39,12 +39,16 @@ void UHealthComponent::TakeDamage(float damage)
 	OnHealthChanged.Broadcast(currentHealth, previousHealth, maxHealth);
 
 	// play the damage taken sound
-	PlaySound(sb_DamageTaken, 1.f, .2f);
+	PlaySound(sb_DamageTaken, .8f, .2f);
 
 	if (currentHealth <= 0.f)
 	{
 		// die
 		bIsDead = true;
+
+		// play the death sound
+		PlaySound(sb_Death, .9f, .2f);
+
 		OnDeath.Broadcast();
 	}
 }
