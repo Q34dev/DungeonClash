@@ -98,7 +98,7 @@ void AEnemyCharacter::OnSlashBegin()
 	// play the attack sound
 	if (IsValid(sb_Attack) && IsValid(GetWorld()))
 	{
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), sb_Attack, GetActorLocation());
+		PlaySound(sb_Attack, .8f, .2f);
 	}
 }
 
@@ -210,6 +210,16 @@ void AEnemyCharacter::DeactivateEnemy()
 
 	// hide the health bar
 	HealthBarWidgetComp->SetVisibility(false);
+}
+
+void AEnemyCharacter::PlaySound(USoundBase* SB, float volumeMultiplier, float pitchRandomizeRange)
+{
+	if (!IsValid(SB)) return;
+	if (!IsValid(GetWorld())) return;
+
+	float pitch = (pitchRandomizeRange > .0f) ? FMath::RandRange(1.f - pitchRandomizeRange, 1.f + pitchRandomizeRange) : 1.f;
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SB, GetActorLocation(), volumeMultiplier, pitch);
 }
 
 void AEnemyCharacter::OnHealthUpdate(float newHealth, float previousHealth, float maxHealth)

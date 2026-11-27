@@ -66,6 +66,8 @@ public:
 	void ActivateEnemy();
 	void DeactivateEnemy();
 
+	void PlaySound(USoundBase* SB, float volumeMultiplier = 1.f, float pitchRandomizeRange = .0f);
+
 protected:
 
 	UFUNCTION()
@@ -78,5 +80,5 @@ protected:
 
 private:
 	// A container that stores actors that were hit during the current attack
-	TArray<AActor*> HitActors;
+	TArray<UHealthComponent*> HitActors;
 };
